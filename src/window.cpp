@@ -70,30 +70,126 @@ namespace glfw
         glfwSwapBuffers(*this);
     }
 
+    bool validateHintBoolean(WindowHint hint)
+    {
+        switch(hint)
+        {
+            case WindowHint::RESIZABLE:
+            case WindowHint::VISIBLE:
+            case WindowHint::DECORATED:
+            case WindowHint::FOCUSED:
+            case WindowHint::AUTO_ICONIFY:
+            case WindowHint::FLOATING:
+            case WindowHint::STEREO:
+            case WindowHint::SRGB_CAPABLE:
+            case WindowHint::DOUBLEBUFFER:
+            case WindowHint::OPENGL_FORWARD_COMPAT:
+            case WindowHint::OPENGL_DEBUG_CONTEXT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    bool validateHintInt(WindowHint hint)
+    {
+        switch(hint)
+        {
+            case WindowHint::RED_BIT:
+            case WindowHint::GREEN_BITS:
+            case WindowHint::BLUE_BITS:
+            case WindowHint::ALPHA_BITS:
+            case WindowHint::DEPTH_BITS:
+            case WindowHint::STENCIL_BITS:
+            case WindowHint::ACCUM_RED_BITS:
+            case WindowHint::ACCUM_GREEN_BITS:
+            case WindowHint::ACCUM_BLUE_BITS:
+            case WindowHint::ACCUM_ALPHA_BITS:
+            case WindowHint::AUX_BUFFERS:
+            case WindowHint::SAMPLES:
+            case WindowHint::REFRESH_RATE:
+            case WindowHint::CONTEXT_VERSION_MAJOR:
+            case WindowHint::CONTEXT_VERSION_MINOR:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    bool validateHintEnum(WindowHint hint)
+    {
+        return !validateHintBoolean(hint); // literally everything but booleans are allowed
+    }
+
+    bool validateHintValue(WindowHint hint, int value)
+    {
+        switch(hint)
+        {
+            case WindowHint::RESIZABLE:
+            case WindowHint::VISIBLE:
+            case WindowHint::DECORATED:
+            case WindowHint::FOCUSED:
+            case WindowHint::AUTO_ICONIFY:
+            case WindowHint::FLOATING:
+            case WindowHint::STEREO:
+            case WindowHint::SRGB_CAPABLE:
+            case WindowHint::DOUBLEBUFFER:
+            case WindowHint::OPENGL_FORWARD_COMPAT:
+            case WindowHint::OPENGL_DEBUG_CONTEXT:
+                return value == GLFW_TRUE || value == GLFW_FALSE;
+
+            case WindowHint::RED_BIT:
+            case WindowHint::GREEN_BITS:
+            case WindowHint::BLUE_BITS:
+            case WindowHint::ALPHA_BITS:
+            case WindowHint::DEPTH_BITS:
+            case WindowHint::STENCIL_BITS:
+            case WindowHint::ACCUM_RED_BITS:
+            case WindowHint::ACCUM_GREEN_BITS:
+            case WindowHint::ACCUM_BLUE_BITS:
+            case WindowHint::ACCUM_ALPHA_BITS:
+            case WindowHint::AUX_BUFFERS:
+            case WindowHint::SAMPLES:
+            case WindowHint::REFRESH_RATE:
+            case WindowHint::CONTEXT_VERSION_MAJOR:
+            case WindowHint::CONTEXT_VERSION_MINOR:
+                return value == GLFW_DONT_CARE || value >= 0 || value <= INT_MAX;
+
+            case WindowHint::CLIENT_API:
+                break;
+            case WindowHint::CONTEXT_ROBUSTNESS:
+                break;
+            case WindowHint::CONTEXT_RELEASE_BEHAVIOR:
+                break;
+            case WindowHint::OPENGL_PROFILE:
+                break;
+
+            default:
+                return false;
+        }
+    }
+
     void windowHint(WindowHint hint, bool value)
     {
-        assert(hint == WindowHint::RESIZABLE
-            || hint == WindowHint::VISIBLE
-            || hint == WindowHint::DECORATED
-            || hint == WindowHint::FOCUSED
-            || hint == WindowHint::AUTO_ICONIFY
-            || hint == WindowHint::FLOATING
-            || hint == WindowHint::STEREO
-            || hint == WindowHint::SRGB_CAPABLE
-            || hint == WindowHint::DOUBLEBUFFER
-            || hint == WindowHint::OPENGL_FORWARD_COMPAT
-            || hint == WindowHint::OPENGL_DEBUG_CONTEXT);
-
+        assert(validateHintBoolean(hint) && "Hint is not valid or does not take a boolean");
         windowHint(hint, value ? GLFW_TRUE : GLFW_FALSE);
     }
 
     void windowHint(WindowHint hint, WindowValue value)
     {
+        assert(validateHintEnum(hint) && "Hint is not valid or does not take an enum value");
         windowHint(hint, static_cast<int>(value));
     }
 
     void windowHint(WindowHint hint, int value)
     {
-        glfwWindowHint(static_cast<int>(hint), value);
+        assert(validateHintValue(hint, value) && "Hint is not valid or provided value is invalid");
+        windowHint(static_cast<int>(hint), value);
+    }
+
+    void windowHint(int hint, int value)
+    {
+        // No programmer checks here, not recommended for use
+        glfwWindowHint(hint, value);
     }
 }

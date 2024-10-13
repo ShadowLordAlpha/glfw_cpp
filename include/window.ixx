@@ -32,14 +32,17 @@ namespace glfw
     {
         void operator()(GLFWwindow* ptr);
     };
+}
 
-    export class Window
+export namespace glfw
+{
+    class Window
     {
     public:
         Window(int width, int height, const char* title);
         explicit Window(GLFWwindow* window);
 
-        operator GLFWwindow*() const;
+        operator GLFWwindow*() const; // NOLINT(*-explicit-constructor)
 
         void makeContextCurrent();
         [[nodiscard]] bool shouldClose() const;
@@ -49,9 +52,7 @@ namespace glfw
         std::unique_ptr<GLFWwindow, Deleter> ptr;
     };
 
-    export constinit int DONT_CARE = GLFW_DONT_CARE;
-
-    export enum class WindowHint
+    enum class WindowHint
     {
         RESIZABLE = GLFW_RESIZABLE,
         VISIBLE = GLFW_VISIBLE,
@@ -85,12 +86,24 @@ namespace glfw
         OPENGL_PROFILE = GLFW_OPENGL_PROFILE,
     };
 
-    export enum class WindowValue
+    enum class WindowValue
     {
+        DONT_CARE = GLFW_DONT_CARE,
+        OPENGL_API = GLFW_OPENGL_API,
+        OPENGL_ES_API = GLFW_OPENGL_ES_API,
+        NO_ROBUSTNESS = GLFW_NO_ROBUSTNESS,
+        NO_RESET_NOTIFICATION = GLFW_NO_RESET_NOTIFICATION,
+        LOSE_CONTEXT_ON_RESET = GLFW_LOSE_CONTEXT_ON_RESET,
+        ANY_RELEASE_BEHAVIOR = GLFW_ANY_RELEASE_BEHAVIOR,
+        RELEASE_BEHAVIOR_FLUSH = GLFW_RELEASE_BEHAVIOR_FLUSH,
+        RELEASE_BEHAVIOR_NONE = GLFW_RELEASE_BEHAVIOR_NONE,
+        OPENGL_ANY_PROFILE = GLFW_OPENGL_ANY_PROFILE,
+        OPENGL_COMPAT_PROFILE = GLFW_OPENGL_COMPAT_PROFILE,
         OPENGL_CORE_PROFILE = GLFW_OPENGL_CORE_PROFILE,
     };
 
-    export inline void windowHint(WindowHint hint, bool value);
-    export inline void windowHint(WindowHint hint, WindowValue value);
-    export inline void windowHint(WindowHint hint, int value);
+    inline void windowHint(WindowHint hint, bool value);
+    inline void windowHint(WindowHint hint, WindowValue value);
+    inline void windowHint(WindowHint hint, int value);
+    inline void windowHint(int hint, int value);
 }

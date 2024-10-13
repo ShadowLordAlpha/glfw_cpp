@@ -41,7 +41,7 @@ namespace glfw
     };
 
     export inline void setErrorCallback(ErrorFun fun);
-    export inline double getTime();
+    export [[nodiscard]] inline double getTime();
     export inline void pollEvents();
     export inline GLFWglproc getProcAddress(const char* procname);
 }
