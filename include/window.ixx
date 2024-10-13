@@ -26,6 +26,7 @@ module;
 
 export module glfw:window;
 
+import :monitor;
 import :type;
 
 namespace glfw
@@ -148,108 +149,70 @@ export namespace glfw
         operator bool() const; // NOLINT(*-explicit-constructor)
 
         [[nodiscard]] bool shouldClose() const;
-        /*inline void setShouldClose(bool value);
-        [[nodiscard]] inline const char* getTitle() const;
-        inline void setTitle(const char*) const;
+        void setShouldClose(bool value);
+        [[nodiscard]] const char* getTitle() const;
+        void setTitle(const char*) const;
         // inline void setIcon(int count); // TODO: implement once Image is implemented
-        inline void getPos(int* xpos, int* ypos) const;
-        [[nodiscard]] inline Position<int> getPos() const;
-        inline void setPos(int xpos, int ypos);
-        inline void setPos(Position<int> pos);
-        inline void getSize(int* width, int* height) const;
-        [[nodiscard]] inline Size getSize() const;
-        inline void setSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight);
-        inline void setSizeLimits(Size min, Size max);
-        inline void setAspectRatio(int numer, int denom);
-        inline void setSize(int width, int height);
-        inline void setSize(Size size);*/
-        void getFramebufferSize(int* width, int* height) const;
+        [[nodiscard]] Position<int> getPos() const;
+        void setPos(Position<int> pos);
+        [[nodiscard]] Size getSize() const;
+        void setSizeLimits(Size min, Size max);
+        void setAspectRatio(int numer, int denom);
+        void setSize(Size size);
         [[nodiscard]] Size getFramebufferSize() const;
-        /*inline void getFrameSize(int* left, int* top, int* right, int* bottom);
-        [[nodiscard]] inline FrameSize getFrameSize();
-        inline void getContentScale(float* xscale, float* yscale);
-        [[nodiscard]] inline Scale getContentScale();
-        [[nodiscard]] inline float getOpacity() const;
-        inline void setOpacity(float opacity);
-        inline void iconify();
-        inline void restore();
-        inline void maximize();
-        inline void show();
-        inline void hide();
-        inline void focus();
-        inline void requestAttention();
-        // Monitor getMonitor(); // TODO: once Monitor is implemented
-        // setMonitor(Monitor monitor) // TODO: once Monitor is implemented
-        [[nodiscard]] inline int getAttrib(int attrib) const; // TODO: enum values?
-        inline void setAttrib(int attrib, int value) const; // TODO: enum values?
-        inline void setUserPointer(void* pointer);
-        [[nodiscard]] inline void* getUserPointer() const;*/
+        [[nodiscard]] FrameSize getFrameSize();
+        [[nodiscard]] Scale getContentScale();
+        [[nodiscard]] float getOpacity() const;
+        void setOpacity(float opacity);
+
+        void iconify();
+        void restore();
+        void maximize();
+        void show();
+        void hide();
+        void focus();
+        void requestAttention();
+
+        Monitor getMonitor();
+        void setMonitor(Monitor monitor);
+        [[nodiscard]] int getAttrib(int attrib) const; // TODO: enum values?
+        void setAttrib(int attrib, int value) const; // TODO: enum values?
+        void setUserPointer(void* pointer);
+        [[nodiscard]] void* getUserPointer() const;
         // TODO
         /*
-        * GLFWwindowposfun 	glfwSetWindowPosCallback (GLFWwindow *window, GLFWwindowposfun callback)
-        Sets the position callback for the specified window.
-
-        GLFWwindowsizefun 	glfwSetWindowSizeCallback (GLFWwindow *window, GLFWwindowsizefun callback)
-        Sets the size callback for the specified window.
-
-        GLFWwindowclosefun 	glfwSetWindowCloseCallback (GLFWwindow *window, GLFWwindowclosefun callback)
-        Sets the close callback for the specified window.
-
-        GLFWwindowrefreshfun 	glfwSetWindowRefreshCallback (GLFWwindow *window, GLFWwindowrefreshfun callback)
-        Sets the refresh callback for the specified window.
-
-        GLFWwindowfocusfun 	glfwSetWindowFocusCallback (GLFWwindow *window, GLFWwindowfocusfun callback)
-        Sets the focus callback for the specified window.
-
-        GLFWwindowiconifyfun 	glfwSetWindowIconifyCallback (GLFWwindow *window, GLFWwindowiconifyfun callback)
-        Sets the iconify callback for the specified window.
-
-        GLFWwindowmaximizefun 	glfwSetWindowMaximizeCallback (GLFWwindow *window, GLFWwindowmaximizefun callback)
-        Sets the maximize callback for the specified window.
-
-        GLFWframebuffersizefun 	glfwSetFramebufferSizeCallback (GLFWwindow *window, GLFWframebuffersizefun callback)
-        Sets the framebuffer resize callback for the specified window.
-
-        GLFWwindowcontentscalefun 	glfwSetWindowContentScaleCallback (GLFWwindow *window, GLFWwindowcontentscalefun callback)
-        Sets the window content scale callback for the specified window. */
-        /*int getInputMode(int mode);
-        int getInputMode(InputMode mode);*/
+        GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindowposfun callback);
+        GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindowsizefun callback);
+        GLFWwindowclosefun glfwSetWindowCloseCallback(GLFWwindowclosefun callback);
+        GLFWwindowrefreshfun glfwSetWindowRefreshCallback(GLFWwindowrefreshfun callback);
+        GLFWwindowfocusfun glfwSetWindowFocusCallback(GLFWwindowfocusfun callback);
+        GLFWwindowiconifyfun glfwSetWindowIconifyCallback(GLFWwindowiconifyfun callback);
+        GLFWwindowmaximizefun glfwSetWindowMaximizeCallback(GLFWwindowmaximizefun callback);
+        GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWframebuffersizefun callback);
+        GLFWwindowcontentscalefun glfwSetWindowContentScaleCallback(GLFWwindowcontentscalefun callback);
+         */
+        int getInputMode(int mode);
+        int getInputMode(InputMode mode);
         void setInputMode(InputMode mode, bool value);
         void setInputMode(InputMode mode, InputValue value);
         void setInputMode(int mode, int value);
         int getKey(int key); // TODO: enum values?
-        /*int getMouseButton(int button); // TODO: enum values?
-        void getCursorPos(double* xpos, double* ypos);
+        int getMouseButton(int button); // TODO: enum values?
         Position<double> getCursorPos();
-        void setCursorPos(double xpos, double ypos);
-        void setCursorPos(Position<double> pos);*/
+        void setCursorPos(Position<double> pos);
         // void setCursor(); // TODO: once cursor is implemented
         /*
-        * GLFWkeyfun 	glfwSetKeyCallback (GLFWwindow *window, GLFWkeyfun callback)
-        Sets the key callback.
-
-        GLFWcharfun 	glfwSetCharCallback (GLFWwindow *window, GLFWcharfun callback)
-        Sets the Unicode character callback.
-
-        GLFWcharmodsfun 	glfwSetCharModsCallback (GLFWwindow *window, GLFWcharmodsfun callback)
-        Sets the Unicode character with modifiers callback.
-
-        GLFWmousebuttonfun 	glfwSetMouseButtonCallback (GLFWwindow *window, GLFWmousebuttonfun callback)
-        Sets the mouse button callback.
-
-        GLFWcursorposfun 	glfwSetCursorPosCallback (GLFWwindow *window, GLFWcursorposfun callback)
-        Sets the cursor position callback.
-
-        GLFWcursorenterfun 	glfwSetCursorEnterCallback (GLFWwindow *window, GLFWcursorenterfun callback)
-        Sets the cursor enter/leave callback.
-
-        GLFWscrollfun 	glfwSetScrollCallback (GLFWwindow *window, GLFWscrollfun callback)
-        Sets the scroll callback.
-
-        GLFWdropfun 	glfwSetDropCallback (GLFWwindow *window, GLFWdropfun callback)
-        Sets the path drop callback. */
-        //void setClipboardString(const char* string);
-        //const char* getClipboardString();
+        GLFWkeyfun glfwSetKeyCallback(GLFWkeyfun callback);
+        GLFWcharfun glfwSetCharCallback(GLFWcharfun callback);
+        GLFWcharmodsfun glfwSetCharModsCallback(GLFWcharmodsfun callback);
+        GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWmousebuttonfun callback);
+        GLFWcursorposfun glfwSetCursorPosCallback(GLFWcursorposfun callback);
+        GLFWcursorenterfun glfwSetCursorEnterCallback(GLFWcursorenterfun callback);
+        GLFWscrollfun glfwSetScrollCallback(GLFWscrollfun callback);
+        GLFWdropfun glfwSetDropCallback(GLFWdropfun callback);
+        */
+        void setClipboardString(const char* string);
+        const char* getClipboardString();
         void makeContextCurrent();
         void swapBuffers();
 

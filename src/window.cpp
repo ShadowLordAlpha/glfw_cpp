@@ -119,15 +119,10 @@ namespace glfw
         glfwSwapBuffers(*this);
     }
 
-    void Window::getFramebufferSize(int* width, int* height) const
-    {
-        glfwGetFramebufferSize(*this, width, height);
-    }
-
     Size Window::getFramebufferSize() const
     {
         int width, height;
-        getFramebufferSize(&width, &height);
+        glfwGetFramebufferSize(ptr.get(), &width, &height);
         return {width, height};
     }
 

@@ -320,11 +320,11 @@ void mouse_button_callback(glfw::Window& window, int button, int action, int mod
 
     if (action == GLFW_PRESS)
     {
-        window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwGetCursorPos(window, &cursorX, &cursorY);
+        window.setInputMode(glfw::InputMode::CURSOR, GLFW_CURSOR_DISABLED);
+        window.getCursorPos(&cursorX, &cursorY);
     }
     else
-        window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        window.setInputMode(glfw::InputMode::CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 
@@ -334,7 +334,7 @@ void mouse_button_callback(glfw::Window& window, int button, int action, int mod
 
 void cursor_position_callback(glfw::Window& window, double x, double y)
 {
-    if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
+    if (window.getInputMode(glfw::InputMode::CURSOR) == glfw::InputValue::CURSOR_DISABLED)
     {
         alpha += (GLfloat) (x - cursorX) / 10.f;
         beta += (GLfloat) (y - cursorY) / 10.f;
@@ -397,11 +397,11 @@ int main()
 
     window = {640, 480, "Wave Simulation"};
 
-    glfwSetKeyCallback(window, key_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetMouseButtonCallback(window, mouse_button_callback);
-    glfwSetCursorPosCallback(window, cursor_position_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+    window.setKeyCallback(key_callback);
+    window.setFramebufferSizeCallback(framebuffer_size_callback);
+    window.setMouseButtonCallback(mouse_button_callback);
+    window.setCursorPosCallback(cursor_position_callback);
+    window.setScrollCallback(scroll_callback);
 
     window.makeContextCurrent();
     gladLoadGL(glfw::getProcAddress);
