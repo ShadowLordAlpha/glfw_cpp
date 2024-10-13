@@ -80,14 +80,14 @@ namespace glfw
 
     Window::Window() : Window(nullptr) {}
 
-    std::unique_ptr<GLFWwindow, Deleter> createWindow(int width, int height, const char *title, GLFWmonitor *monitor, GLFWwindow *share)
+    GLFWwindow* createWindow(int width, int height, const char *title, GLFWmonitor *monitor, GLFWwindow *share)
     {
         auto windowPtr = glfwCreateWindow(width, height, title, monitor, share);
         if(!windowPtr)
         {
             throw std::runtime_error(getError());
         }
-        return std::unique_ptr<GLFWwindow, Deleter>(windowPtr);
+        return windowPtr;
     }
 
     Window::Window(int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share) : ptr(createWindow(width, height, title, monitor, share)) {}

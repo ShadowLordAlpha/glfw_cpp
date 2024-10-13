@@ -31,22 +31,9 @@ export namespace glfw
 {
     class Monitor;
 
-    // TODO: test if we can use our value instead
-    //typedef (* MonitorFunction)(Monitor monitor, int event); // We want to use the Monitor object so we can't directly use GLFWmonitorfun
-    using MonitorFunction = GLFWmonitorfun;
-
     [[nodiscard]] std::vector<Monitor> getMonitors();
     [[nodiscard]] Monitor getPrimaryMonitor();
-    MonitorFunction setMonitorCallback(MonitorFunction callback); // TODO: properly figure this out...
-
-    struct WorkArea
-    {
-        int x, y;
-        int width, height;
-    };
-
-    using VideoMode = GLFWvidmode;
-    using GammaRamp = GLFWgammaramp;
+    MonitorFunction setMonitorCallback(MonitorFunction callback = nullptr); // TODO: properly figure this out...
 
     class Monitor
     {

@@ -20,11 +20,36 @@
 
 module;
 
-export module glfw;
+#include <memory>
+#include <GLFW\glfw3.h>
 
-export import :type;
-export import :library;
-export import :monitor;
-export import :cursor;
-export import :window;
-export import :version;
+export module glfw:cursor;
+
+import :type;
+
+namespace glfw
+{
+    struct DeleterCursor
+    {
+        void operator()(GLFWcursor* ptr);
+    };
+}
+
+export namespace glfw
+{
+    class Cursor
+    {
+    public:
+        Cursor();
+        explicit Cursor(CursorShape shape);
+        explicit Cursor(int shape);
+        explicit Cursor(const Image& image, Position<int> posHot = {0, 0});
+        explicit Cursor(GLFWcursor* cursor);
+
+        operator GLFWcursor*() const; // NOLINT(*-explicit-constructor)
+        operator bool() const; // NOLINT(*-explicit-constructor)
+
+    private:
+        std::unique_ptr<GLFWcursor, DeleterCursor> ptr;
+    };
+}
