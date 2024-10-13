@@ -38,6 +38,8 @@ target_sources(glfw_cpp
         include/glfw.ixx
         include/library.ixx
         include/window.ixx
+        include/monitor.ixx
+        include/type.ixx
         include/version.ixx
 )
 
@@ -45,6 +47,7 @@ target_sources(glfw_cpp
 target_sources(glfw_cpp
         PRIVATE
         src/library.cpp
+        src/monitor.cpp
         src/window.cpp
         src/version.cpp
 )

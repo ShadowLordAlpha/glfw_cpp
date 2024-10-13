@@ -23,8 +23,9 @@ module;
 #include <memory>
 #include <cassert>
 #include <stdexcept>
+#include <GLFW/glfw3.h>
 
-#include "GLFW/glfw3.h"
+//#include "checks.h";
 
 module glfw;
 
@@ -35,7 +36,49 @@ namespace glfw
         glfwDestroyWindow(ptr);
     }
 
-    Window::Window() : ptr(nullptr) {}
+    void defaultWindowHints()
+    {
+        glfwDefaultWindowHints();
+    }
+
+    void windowHint(WindowHint hint, bool value)
+    {
+        //assert(validateHintBoolean(hint) && "Hint is not valid or does not take a boolean");
+        windowHint(hint, value ? GLFW_TRUE : GLFW_FALSE);
+    }
+
+    void windowHint(WindowHint hint, WindowValue value)
+    {
+        //assert(validateHintEnum(hint) && "Hint is not valid or does not take an enum value");
+        windowHint(hint, static_cast<int>(value));
+    }
+
+    void windowHint(WindowHint hint, int value)
+    {
+        //assert(validateHintValue(hint, value) && "Hint is not valid or provided value is invalid");
+        windowHint(static_cast<int>(hint), value);
+    }
+
+    void windowHint(WindowHint hint, const char* value)
+    {
+        //assert(validateHintString(hint) && "Hint is not valid or does not take a string value");
+        windowHint(static_cast<int>(hint), value);
+    }
+
+    void windowHint(int hint, const char* value)
+    {
+        glfwWindowHintString(hint, value);
+    }
+
+    void windowHint(int hint, int value)
+    {
+        // No programmer checks here, not recommended for use
+        glfwWindowHint(hint, value);
+    }
+
+    // Window methods below
+
+    Window::Window() : Window(nullptr) {}
 
     std::unique_ptr<GLFWwindow, Deleter> createWindow(int width, int height, const char *title, GLFWmonitor *monitor, GLFWwindow *share)
     {
@@ -53,26 +96,22 @@ namespace glfw
 
     Window::operator GLFWwindow*() const
     {
-        if(ptr.get() == nullptr)
-        {
-            return nullptr;
-        }
         return ptr.get();
     }
 
     Window::operator bool() const
     {
-        return ptr.get();
+        return ptr.get() != nullptr;
     }
 
     void Window::makeContextCurrent()
     {
-        glfwMakeContextCurrent(*this);
+        glfwMakeContextCurrent(ptr.get());
     }
 
     bool Window::shouldClose() const
     {
-        return glfwWindowShouldClose(*this);
+        return glfwWindowShouldClose(ptr.get());
     }
 
     void Window::swapBuffers()
@@ -80,126 +119,35 @@ namespace glfw
         glfwSwapBuffers(*this);
     }
 
-    bool validateHintBoolean(WindowHint hint)
+    void Window::getFramebufferSize(int* width, int* height) const
     {
-        switch(hint)
-        {
-            case WindowHint::RESIZABLE:
-            case WindowHint::VISIBLE:
-            case WindowHint::DECORATED:
-            case WindowHint::FOCUSED:
-            case WindowHint::AUTO_ICONIFY:
-            case WindowHint::FLOATING:
-            case WindowHint::STEREO:
-            case WindowHint::SRGB_CAPABLE:
-            case WindowHint::DOUBLEBUFFER:
-            case WindowHint::OPENGL_FORWARD_COMPAT:
-            case WindowHint::OPENGL_DEBUG_CONTEXT:
-                return true;
-            default:
-                return false;
-        }
+        glfwGetFramebufferSize(*this, width, height);
     }
 
-    bool validateHintInt(WindowHint hint)
+    Size Window::getFramebufferSize() const
     {
-        switch(hint)
-        {
-            case WindowHint::RED_BIT:
-            case WindowHint::GREEN_BITS:
-            case WindowHint::BLUE_BITS:
-            case WindowHint::ALPHA_BITS:
-            case WindowHint::DEPTH_BITS:
-            case WindowHint::STENCIL_BITS:
-            case WindowHint::ACCUM_RED_BITS:
-            case WindowHint::ACCUM_GREEN_BITS:
-            case WindowHint::ACCUM_BLUE_BITS:
-            case WindowHint::ACCUM_ALPHA_BITS:
-            case WindowHint::AUX_BUFFERS:
-            case WindowHint::SAMPLES:
-            case WindowHint::REFRESH_RATE:
-            case WindowHint::CONTEXT_VERSION_MAJOR:
-            case WindowHint::CONTEXT_VERSION_MINOR:
-                return true;
-            default:
-                return false;
-        }
+        int width, height;
+        getFramebufferSize(&width, &height);
+        return {width, height};
     }
 
-    bool validateHintEnum(WindowHint hint)
+    void Window::setInputMode(InputMode mode, bool value)
     {
-        return !validateHintBoolean(hint); // literally everything but booleans are allowed
+        setInputMode(static_cast<int>(mode), value ? GLFW_TRUE: GLFW_FALSE);
     }
 
-    bool validateHintValue(WindowHint hint, int value)
+    void Window::setInputMode(InputMode mode, InputValue value)
     {
-        switch(hint)
-        {
-            case WindowHint::RESIZABLE:
-            case WindowHint::VISIBLE:
-            case WindowHint::DECORATED:
-            case WindowHint::FOCUSED:
-            case WindowHint::AUTO_ICONIFY:
-            case WindowHint::FLOATING:
-            case WindowHint::STEREO:
-            case WindowHint::SRGB_CAPABLE:
-            case WindowHint::DOUBLEBUFFER:
-            case WindowHint::OPENGL_FORWARD_COMPAT:
-            case WindowHint::OPENGL_DEBUG_CONTEXT:
-                return value == GLFW_TRUE || value == GLFW_FALSE;
-
-            case WindowHint::RED_BIT:
-            case WindowHint::GREEN_BITS:
-            case WindowHint::BLUE_BITS:
-            case WindowHint::ALPHA_BITS:
-            case WindowHint::DEPTH_BITS:
-            case WindowHint::STENCIL_BITS:
-            case WindowHint::ACCUM_RED_BITS:
-            case WindowHint::ACCUM_GREEN_BITS:
-            case WindowHint::ACCUM_BLUE_BITS:
-            case WindowHint::ACCUM_ALPHA_BITS:
-            case WindowHint::AUX_BUFFERS:
-            case WindowHint::SAMPLES:
-            case WindowHint::REFRESH_RATE:
-            case WindowHint::CONTEXT_VERSION_MAJOR:
-            case WindowHint::CONTEXT_VERSION_MINOR:
-                return value == GLFW_DONT_CARE || value >= 0 || value <= INT_MAX;
-
-            case WindowHint::CLIENT_API:
-                break;
-            case WindowHint::CONTEXT_ROBUSTNESS:
-                break;
-            case WindowHint::CONTEXT_RELEASE_BEHAVIOR:
-                break;
-            case WindowHint::OPENGL_PROFILE:
-                break;
-
-            default:
-                return false;
-        }
+        setInputMode(static_cast<int>(mode), static_cast<int>(value));
     }
 
-    void windowHint(WindowHint hint, bool value)
+    void Window::setInputMode(int mode, int value)
     {
-        assert(validateHintBoolean(hint) && "Hint is not valid or does not take a boolean");
-        windowHint(hint, value ? GLFW_TRUE : GLFW_FALSE);
+        glfwSetInputMode(*this, mode, value);
     }
 
-    void windowHint(WindowHint hint, WindowValue value)
+    int Window::getKey(int key)
     {
-        assert(validateHintEnum(hint) && "Hint is not valid or does not take an enum value");
-        windowHint(hint, static_cast<int>(value));
-    }
-
-    void windowHint(WindowHint hint, int value)
-    {
-        assert(validateHintValue(hint, value) && "Hint is not valid or provided value is invalid");
-        windowHint(static_cast<int>(hint), value);
-    }
-
-    void windowHint(int hint, int value)
-    {
-        // No programmer checks here, not recommended for use
-        glfwWindowHint(hint, value);
+        return glfwGetKey(*this, key);
     }
 }

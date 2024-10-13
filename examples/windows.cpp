@@ -22,30 +22,28 @@
 //    distribution.
 //
 //========================================================================
+//
+// 2024-10-13: Modified for GLFW_CPP - Josh "ShadowLordAlpha"
+//
 
-// This file has been modified by Josh "ShadowLordAlpha" to make use of GLFW_CPP and be in C++
-
-#include <cstdio>
 #include <cstdlib>
 
 #include <glad/gl.h>
-#include <GLFW/glfw3.h>
+#define GLFW_INCLUDE_NONE
 
 import glfw;
 
 int main()
 {
-    int xpos, ypos, height;
-
     glfw::Window windows[4];
 
     glfw::Library library;
 
     glfw::windowHint(glfw::WindowHint::DECORATED, false);
 
-    glfwGetMonitorWorkarea(glfwGetPrimaryMonitor(), &xpos, &ypos, NULL, &height);
+    auto [xpos, ypos, width, height] = glfw::getPrimaryMonitor().getWorkarea();
 
-    for (int i = 0;  i < 4;  i++)
+    for(int i = 0;  i < 4;  i++)
     {
         const int size = height / 5;
         const struct
@@ -59,32 +57,31 @@ int main()
             { 0.98f, 0.74f, 0.04f }
         };
 
-        // TODO: add GLFW 3.4 support, we are 3.1 atm
         if (i > 0)
-            glfw::windowHint(GLFW_FOCUS_ON_SHOW, false);
+            glfw::windowHint(glfw::WindowHint::FOCUS_ON_SHOW, false);
 
-        glfw::windowHint(GLFW_POSITION_X, xpos + size * (1 + (i & 1)));
-        glfw::windowHint(GLFW_POSITION_Y, ypos + size * (1 + (i >> 1)));
+        glfw::windowHint(glfw::WindowHint::POSITION_X, xpos + size * (1 + (i & 1)));
+        glfw::windowHint(glfw::WindowHint::POSITION_Y, ypos + size * (1 + (i >> 1)));
 
         windows[i] = glfw::Window(size, size, "Multi-Window Example");
 
-        glfwSetInputMode(windows[i], GLFW_STICKY_KEYS, GLFW_TRUE);
+        windows[i].setInputMode(glfw::InputMode::STICKY_KEYS, true);
 
         windows[i].makeContextCurrent();
         gladLoadGL(glfw::getProcAddress);
         glClearColor(colors[i].r, colors[i].g, colors[i].b, 1.f);
     }
 
-    for (;;)
+    while(true)
     {
-        for (int i = 0;  i < 4;  i++)
+        for(auto& window : windows)
         {
-            windows[i].makeContextCurrent();
+            window.makeContextCurrent();
             glClear(GL_COLOR_BUFFER_BIT);
-            windows[i].swapBuffers();
+            window.swapBuffers();
 
-            if (windows[i].shouldClose() ||
-                glfwGetKey(windows[i], GLFW_KEY_ESCAPE))
+            if (window.shouldClose() ||
+                window.getKey(256/*GLFW_KEY_ESCAPE*/))
             {
                 return EXIT_SUCCESS;
             }

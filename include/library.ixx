@@ -46,5 +46,6 @@ namespace glfw
     export [[nodiscard]] inline std::string getError();
     export inline void pollEvents();
     export inline void waitEvents();
+    export inline void swapInterval(int interval);
     export inline GLFWglproc getProcAddress(const char* procname);
 }

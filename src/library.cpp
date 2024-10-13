@@ -70,6 +70,11 @@ namespace glfw
         glfwWaitEvents();
     }
 
+    void swapInterval(int interval)
+    {
+        glfwSwapInterval(interval);
+    }
+
     glProc getProcAddress(const char* procname)
     {
         return glfwGetProcAddress(procname);
