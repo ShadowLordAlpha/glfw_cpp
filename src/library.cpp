@@ -20,6 +20,7 @@
 
 module;
 
+#include <string>
 #include <stdexcept>
 #include <GLFW/glfw3.h>
 
@@ -31,7 +32,7 @@ namespace glfw
     {
         if(!glfwInit())
         {
-            throw std::runtime_error("Failed to initialize GLFW");
+            throw std::runtime_error(getError());
         }
     }
 
@@ -52,9 +53,21 @@ namespace glfw
         return glfwGetTime();
     }
 
+    std::string getError()
+    {
+        const char* description;
+        glfwGetError(&description);
+        return description;
+    }
+
     void pollEvents()
     {
         glfwPollEvents();
+    }
+
+    void waitEvents()
+    {
+        glfwWaitEvents();
     }
 
     glProc getProcAddress(const char* procname)

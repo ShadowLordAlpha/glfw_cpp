@@ -39,10 +39,12 @@ export namespace glfw
     class Window
     {
     public:
-        Window(int width, int height, const char* title);
+        Window();
+        Window(int width, int height, const char* title, GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
         explicit Window(GLFWwindow* window);
 
         operator GLFWwindow*() const; // NOLINT(*-explicit-constructor)
+        operator bool() const; // NOLINT(*-explicit-constructor)
 
         void makeContextCurrent();
         [[nodiscard]] bool shouldClose() const;

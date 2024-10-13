@@ -35,22 +35,32 @@ namespace glfw
         glfwDestroyWindow(ptr);
     }
 
-    Window::Window(int width, int height, const char* title)
+    Window::Window() : ptr(nullptr) {}
+
+    std::unique_ptr<GLFWwindow, Deleter> createWindow(int width, int height, const char *title, GLFWmonitor *monitor, GLFWwindow *share)
     {
-        auto windowPtr = glfwCreateWindow(width, height, title, nullptr, nullptr);
+        auto windowPtr = glfwCreateWindow(width, height, title, monitor, share);
         if(!windowPtr)
         {
-            throw std::runtime_error("Failed to create a GLFW window.");
+            throw std::runtime_error(getError());
         }
-        ptr = std::unique_ptr<GLFWwindow, Deleter>(windowPtr);
+        return std::unique_ptr<GLFWwindow, Deleter>(windowPtr);
     }
 
-    Window::Window(GLFWwindow* window)
-    {
-        ptr = std::unique_ptr<GLFWwindow, Deleter>(window);
-    }
+    Window::Window(int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share) : ptr(createWindow(width, height, title, monitor, share)) {}
+
+    Window::Window(GLFWwindow* window) : ptr(window) {}
 
     Window::operator GLFWwindow*() const
+    {
+        if(ptr.get() == nullptr)
+        {
+            return nullptr;
+        }
+        return ptr.get();
+    }
+
+    Window::operator bool() const
     {
         return ptr.get();
     }

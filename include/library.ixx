@@ -20,6 +20,7 @@
 
 module;
 
+#include <string>
 #include <GLFW/glfw3.h>
 
 export module glfw:library;
@@ -42,6 +43,8 @@ namespace glfw
 
     export inline void setErrorCallback(ErrorFun fun);
     export [[nodiscard]] inline double getTime();
+    export [[nodiscard]] inline std::string getError();
     export inline void pollEvents();
+    export inline void waitEvents();
     export inline GLFWglproc getProcAddress(const char* procname);
 }
