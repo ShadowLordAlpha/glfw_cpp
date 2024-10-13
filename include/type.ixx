@@ -20,10 +20,23 @@
 
 module;
 
-export module glfw;
+export module glfw:type;
 
-export import :type;
-export import :library;
-export import :monitor;
-export import :window;
-export import :version;
+export namespace glfw
+{
+    template<typename type>
+    struct Position
+    {
+        type x, y;
+    };
+
+    struct Size
+    {
+        int width, height;
+    };
+
+    struct Scale // This "could" be a Position<float> but that would kinda break type checking and the two are not the same
+    {
+        float x, y;
+    };
+}
