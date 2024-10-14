@@ -41,6 +41,10 @@ namespace glfw
         glfwTerminate();
     }
 
+
+
+
+
     void setErrorCallback(ErrorFun fun)
     {
         // We could do our own error function with asserts but we want to stay as close to the glfw interface as
@@ -53,7 +57,7 @@ namespace glfw
         return glfwGetTime();
     }
 
-    std::string getError()
+    const std::string& getError()
     {
         const char* description;
         glfwGetError(&description);

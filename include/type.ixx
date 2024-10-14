@@ -31,9 +31,18 @@ export namespace glfw
     using MonitorFunction = GLFWmonitorfun;
 
     // Redefine structs to be within our namespace
+    using ErrorFun = GLFWerrorfun;
+    using glProc = GLFWglproc;
     using Image = GLFWimage;
     using VideoMode = GLFWvidmode;
     using GammaRamp = GLFWgammaramp;
+
+    struct Version
+    {
+        int major;
+        int minor;
+        int revision;
+    };
 
     struct WorkArea
     {

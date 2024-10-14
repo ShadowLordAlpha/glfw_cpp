@@ -39,9 +39,9 @@ target_sources(glfw_cpp
         include/library.ixx
         include/window.ixx
         include/monitor.ixx
+        include/joystick.ixx
         include/cursor.ixx
         include/type.ixx
-        include/version.ixx
 )
 
 # Source files
@@ -49,6 +49,7 @@ target_sources(glfw_cpp
         PRIVATE
         src/library.cpp
         src/monitor.cpp
+        src/joystick.cpp
         src/window.cpp
         src/cursor.cpp
         src/version.cpp

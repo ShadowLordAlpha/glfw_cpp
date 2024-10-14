@@ -21,6 +21,7 @@
 module;
 
 #include <vector>
+#include <string>
 #include <glfw/glfw3.h>
 
 module glfw;
@@ -94,7 +95,7 @@ namespace glfw
         return {x, y};
     }
 
-    const char* Monitor::getName() const
+    const std::string& Monitor::getName() const
     {
         return glfwGetMonitorName(ptr);
     }
@@ -109,12 +110,12 @@ namespace glfw
         return glfwGetMonitorUserPointer(ptr);
     }
 
-    std::vector<VideoMode> Monitor::getVideoModes()
+    const std::vector<const VideoMode> Monitor::getVideoModes()
     {
         int count;
         auto nModes = glfwGetVideoModes(ptr, &count);
 
-        std::vector<VideoMode> modes;
+        std::vector<const VideoMode> modes;
         modes.reserve(count);
         for(int i = 0; i < count; ++i)
         {
@@ -123,7 +124,7 @@ namespace glfw
         return modes;
     }
 
-    VideoMode Monitor::getVideoMode() const
+    const VideoMode Monitor::getVideoMode() const
     {
         return *glfwGetVideoMode(ptr);
     }

@@ -27,6 +27,7 @@ module;
 export module glfw:window;
 
 import :monitor;
+import :cursor;
 import :type;
 
 namespace glfw
@@ -39,14 +40,19 @@ namespace glfw
 
 export namespace glfw
 {
+    class Window;
+
     inline void defaultWindowHints();
 
-    inline void windowHint(WindowHint hint, bool value);
-    inline void windowHint(WindowHint hint, WindowValue value);
-    inline void windowHint(WindowHint hint, int value);
-    inline void windowHint(WindowHint hint, const char* value);
+    inline void windowHint(WindowHint hint, bool value); // Type checked/convince overload
+    inline void windowHint(WindowHint hint, WindowValue value); // Type checked/convince overload
+    inline void windowHint(WindowHint hint, int value); // Type checked/convince overload
+    inline void windowHint(WindowHint hint, const char* value); // Type checked/convince overload
+
     inline void windowHint(int hint, const char* value);
     inline void windowHint(int hint, int value);
+
+    inline Window getCurrentContext();
 
     class Window
     {
@@ -62,7 +68,7 @@ export namespace glfw
         void setShouldClose(bool value);
         [[nodiscard]] const char* getTitle() const;
         void setTitle(const char*) const;
-        // inline void setIcon(int count); // TODO: implement once Image is implemented
+        void setIcon(const std::vector<const Image>& images); // TODO: implement once Image is implemented, does it need to be optional?
         [[nodiscard]] Position<int> getPos() const;
         void setPos(Position<int> pos);
         [[nodiscard]] Size getSize() const;
@@ -84,9 +90,9 @@ export namespace glfw
         void requestAttention();
 
         Monitor getMonitor();
-        void setMonitor(Monitor monitor);
+        void setMonitor(Monitor monitor, Position<int> pos, Size size, int refreshRate);
         [[nodiscard]] int getAttrib(int attrib) const; // TODO: enum values?
-        void setAttrib(int attrib, int value) const; // TODO: enum values?
+        void setAttrib(int attrib, int value); // TODO: enum values?
         void setUserPointer(void* pointer);
         [[nodiscard]] void* getUserPointer() const;
         // TODO
@@ -101,16 +107,16 @@ export namespace glfw
         GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWframebuffersizefun callback);
         GLFWwindowcontentscalefun glfwSetWindowContentScaleCallback(GLFWwindowcontentscalefun callback);
          */
+        int getInputMode(InputMode mode); // Type checked/convince overload
         int getInputMode(int mode);
-        int getInputMode(InputMode mode);
-        void setInputMode(InputMode mode, bool value);
-        void setInputMode(InputMode mode, InputValue value);
+        void setInputMode(InputMode mode, bool value); // Type checked/convince overload
+        void setInputMode(InputMode mode, InputValue value); // Type checked/convince overload
         void setInputMode(int mode, int value);
-        int getKey(int key); // TODO: enum values?
-        int getMouseButton(int button); // TODO: enum values?
-        Position<double> getCursorPos();
+        int getKey(int key) const; // TODO: type checked method
+        int getMouseButton(int button) const; // TODO: type checked method
+        Position<double> getCursorPos() const;
         void setCursorPos(Position<double> pos);
-        // void setCursor(); // TODO: once cursor is implemented
+        void setCursor(Cursor* cursor = nullptr); // TODO: check if we can pass a glfw cursor to this method, if not we may need to use the other type as we don't want to force us holding the object
         /*
         GLFWkeyfun glfwSetKeyCallback(GLFWkeyfun callback);
         GLFWcharfun glfwSetCharCallback(GLFWcharfun callback);

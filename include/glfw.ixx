@@ -27,4 +27,4 @@ export import :library;
 export import :monitor;
 export import :cursor;
 export import :window;
-export import :version;
+export import :joystick;

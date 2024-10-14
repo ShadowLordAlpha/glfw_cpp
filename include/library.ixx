@@ -25,12 +25,42 @@ module;
 
 export module glfw:library;
 
-namespace glfw
-{
-    export using ErrorFun = GLFWerrorfun;
-    export using glProc = GLFWglproc;
+import :type;
 
-    export class Library
+export namespace glfw
+{
+
+    inline void glfwInitHint(int hint, int value);
+    inline void glfwInitAllocator(const GLFWallocator *allocator);
+    // inline void glfwInitVulkanLoader(PFN_vkGetInstanceProcAddr loader) // TODO
+    [[nodiscard]] constexpr Version getCompileTimeVersion();
+    [[nodiscard]] inline Version getVersion();
+    [[nodiscard]] inline const char* getVersionString();
+    [[nodiscard]] inline const std::string& getError(); // TODO: check what returns when there is no error
+    [[nodiscard]] inline ErrorFun setErrorCallback(ErrorFun fun);
+    inline void getPlatform();
+    bool platformSupported(int platform); // TODO: type checked method
+    inline void pollEvents();
+    inline void waitEvents();
+    inline void waitEventsTimeout(double timeout);
+    inline void postEmptyEvent();
+    inline bool rawMouseMotionSupport();
+    inline const char* getKeyName(int key, int scancode); // TODO: type checked method
+    inline int getKeyScancode(int key); // TODO: type checked method?
+    [[nodiscard]] inline double getTime();
+    inline void setTime(double time);
+    [[nodiscard]] inline uint64_t getTimerValue();
+    [[nodiscard]] inline uint64_t getTimerFrequency();
+    inline void swapInterval(int interval);
+    [[nodiscard]] inline bool extensionSupported(const char* extension);
+    inline GLFWglproc getProcAddress(const char* procname);
+    inline bool vulkanSupported();
+    inline const char** getRequiredInstanceExtensions(uint32_t* count);
+    // inline GLFWvkproc getInstanceProcAddress (VkInstance instance, const char *procname); // TODO:
+    // bool getPhysicalDevicePresentationSupport(VkInstance instance, VkPhysicalDevice device, uint32_t queuefamily);
+    // VkResult createWindowSurface(VkInstance instance, GLFWwindow *window, const VkAllocationCallbacks *allocator, VkSurfaceKHR *surface); // TODO: should this be part of Window instead?
+
+    class Library
     {
     public:
         Library();
@@ -40,12 +70,4 @@ namespace glfw
         Library(const Library&) = delete;
         Library& operator=(const Library&) = delete;
     };
-
-    export inline void setErrorCallback(ErrorFun fun);
-    export [[nodiscard]] inline double getTime();
-    export [[nodiscard]] inline std::string getError();
-    export inline void pollEvents();
-    export inline void waitEvents();
-    export inline void swapInterval(int interval);
-    export inline GLFWglproc getProcAddress(const char* procname);
 }

@@ -41,7 +41,7 @@ export namespace glfw
     {
     public:
         Cursor();
-        explicit Cursor(CursorShape shape);
+        explicit Cursor(CursorShape shape); // Type checked/convince overload
         explicit Cursor(int shape);
         explicit Cursor(const Image& image, Position<int> posHot = {0, 0});
         explicit Cursor(GLFWcursor* cursor);

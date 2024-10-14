@@ -21,6 +21,7 @@
 module;
 
 #include <vector>
+#include <string>
 #include <glfw/glfw3.h>
 
 export module glfw:monitor;
@@ -31,9 +32,9 @@ export namespace glfw
 {
     class Monitor;
 
-    [[nodiscard]] std::vector<Monitor> getMonitors();
-    [[nodiscard]] Monitor getPrimaryMonitor();
-    MonitorFunction setMonitorCallback(MonitorFunction callback = nullptr); // TODO: properly figure this out...
+    [[nodiscard]] inline std::vector<Monitor> getMonitors();
+    [[nodiscard]] inline Monitor getPrimaryMonitor();
+    inline MonitorFunction setMonitorCallback(MonitorFunction callback = nullptr); // TODO: properly figure this out...
 
     class Monitor
     {
@@ -48,11 +49,11 @@ export namespace glfw
         [[nodiscard]] WorkArea getWorkarea() const;
         [[nodiscard]] Size getPhysicalSize() const;
         [[nodiscard]] Scale getContentScale() const;
-        [[nodiscard]] const char* getName() const;
+        [[nodiscard]] const std::string& getName() const;
         void setUserPointer(void* pointer);
         [[nodiscard]] void* getUserPointer() const;
-        [[nodiscard]] std::vector<VideoMode> getVideoModes();
-        [[nodiscard]] VideoMode getVideoMode() const;
+        [[nodiscard]] const std::vector<const VideoMode> getVideoModes(); // TODO: check if this should be a reference, it might be better to have it as such then as a copy
+        [[nodiscard]] const VideoMode getVideoMode() const;
         void setGamma(float gamma);
         [[nodiscard]] GammaRamp getGammaRamp() const;
         void setGammaRamp(GammaRamp ramp);
