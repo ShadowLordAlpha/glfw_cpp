@@ -38,8 +38,8 @@ export namespace glfw
         Joystick();
         Joystick(JoystickType jid); // NOLINT(*-explicit-constructor)
         Joystick(int jid); // NOLINT(*-explicit-constructor)
-        ~Joystick();
 
+        operator int() const;
         [[nodiscard]] int get() const;
 
         [[nodiscard]] bool present() const;
@@ -51,11 +51,10 @@ export namespace glfw
         bool isGamepad();
         const char* getGamepadName();
         GamepadState getGamepadState();
+        void setUserPointer(void* pointer);
+        [[nodiscard]] void* getUserPointer() const;
 
     private:
         int jid;
-
-        void setUserPointer(void* pointer);
-        [[nodiscard]] void* getUserPointer() const;
     };
 }

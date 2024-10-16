@@ -32,7 +32,7 @@ export namespace glfw
     class Monitor;
 
     using GamepadState = GLFWgamepadstate;
-    using JoystickFunction = std::function<void(Joystick*, int)>; // GLFWjoystickfun;
+    using JoystickFunction = std::function<void(Joystick, int)>; // GLFWjoystickfun;
 
     enum JoystickType
     {

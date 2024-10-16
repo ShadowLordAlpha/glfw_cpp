@@ -34,8 +34,7 @@ namespace glfw
         {
             glfwSetJoystickCallback([](int jid, int event)
             {
-                Joystick* joystickPointer = static_cast<Joystick *>(glfwGetJoystickUserPointer(jid));
-                joystickCallback(joystickPointer, event);
+                joystickCallback(jid, event);
             });
             return callback;
         }
@@ -57,25 +56,11 @@ namespace glfw
 
     Joystick::Joystick(JoystickType jid) : Joystick(static_cast<int>(jid)) {}
 
-    Joystick::Joystick(int jid) : jid(jid)
-    {
-        if(jid != -1)
-        {
-            if(getUserPointer() != nullptr)
-            {
-                throw std::runtime_error("Joystick already exists or userdata is in use");
-            }
-            setUserPointer(this);
-        }
-    }
+    Joystick::Joystick(int jid) : jid(jid) {}
 
-    Joystick::~Joystick()
+    Joystick::operator int() const
     {
-        if(jid != -1)
-        {
-            setUserPointer(nullptr);
-            jid = -1;
-        }
+        return get();
     }
 
     int Joystick::get() const
