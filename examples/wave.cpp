@@ -278,7 +278,7 @@ void key_callback(glfw::Window& window, int key, int scancode, int action, int m
     switch (key)
     {
         case GLFW_KEY_ESCAPE:
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
+            window.setShouldClose(true);
             break;
         case GLFW_KEY_SPACE:
             init_grid();

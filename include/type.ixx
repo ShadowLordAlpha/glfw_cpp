@@ -20,15 +20,44 @@
 
 module;
 
+#include <functional>
+#include <GLFW/glfw3.h>
+
 export module glfw:type;
-#include "GLFW/glfw3.h"
 
 export namespace glfw
 {
+    class Window;
+    class Joystick;
+    class Monitor;
+
+    using GamepadState = GLFWgamepadstate;
+    using JoystickFunction = std::function<void(Joystick*, int)>; // GLFWjoystickfun;
+
+    enum JoystickType
+    {
+        JOYSTICK_1 = GLFW_JOYSTICK_1,
+        JOYSTICK_2 = GLFW_JOYSTICK_2,
+        JOYSTICK_3 = GLFW_JOYSTICK_3,
+        JOYSTICK_4 = GLFW_JOYSTICK_4,
+        JOYSTICK_5 = GLFW_JOYSTICK_5,
+        JOYSTICK_6 = GLFW_JOYSTICK_6,
+        JOYSTICK_7 = GLFW_JOYSTICK_7,
+        JOYSTICK_8 = GLFW_JOYSTICK_8,
+        JOYSTICK_9 = GLFW_JOYSTICK_9,
+        JOYSTICK_10 = GLFW_JOYSTICK_10,
+        JOYSTICK_11 = GLFW_JOYSTICK_11,
+        JOYSTICK_12 = GLFW_JOYSTICK_12,
+        JOYSTICK_13 = GLFW_JOYSTICK_13,
+        JOYSTICK_14 = GLFW_JOYSTICK_14,
+        JOYSTICK_15 = GLFW_JOYSTICK_15,
+        JOYSTICK_16 = GLFW_JOYSTICK_16,
+    };
 
     // TODO: test if we can use our value instead
     //typedef (* MonitorFunction)(Monitor monitor, int event); // We want to use the Monitor object so we can't directly use GLFWmonitorfun
-    using MonitorFunction = GLFWmonitorfun;
+    using MonitorFunction = std::function<void(Monitor, int)>;
+    // using MonitorFunction = GLFWmonitorfun;
 
     // Redefine structs to be within our namespace
     using ErrorFun = GLFWerrorfun;
@@ -36,6 +65,8 @@ export namespace glfw
     using Image = GLFWimage;
     using VideoMode = GLFWvidmode;
     using GammaRamp = GLFWgammaramp;
+
+    using WindowPosFunction = std::function<void(GLFWwindow* window, int x, int y)>;
 
     struct Version
     {

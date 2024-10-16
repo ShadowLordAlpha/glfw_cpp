@@ -22,6 +22,7 @@ module;
 
 #include <memory>
 #include <cassert>
+#include <functional>
 #include <stdexcept>
 #include <GLFW/glfw3.h>
 
@@ -126,6 +127,12 @@ namespace glfw
         return {width, height};
     }
 
+    WindowPosFunction Window::setWindowPosCallback(WindowPosFunction callback)
+    {
+        glfwSetWindowPosCallback(ptr.get(), [](GLFWwindow* window, int x, int y));
+        return callback;
+    }
+
     void Window::setInputMode(InputMode mode, bool value)
     {
         setInputMode(static_cast<int>(mode), value ? GLFW_TRUE: GLFW_FALSE);
@@ -141,7 +148,7 @@ namespace glfw
         glfwSetInputMode(*this, mode, value);
     }
 
-    int Window::getKey(int key)
+    int Window::getKey(int key) const
     {
         return glfwGetKey(*this, key);
     }

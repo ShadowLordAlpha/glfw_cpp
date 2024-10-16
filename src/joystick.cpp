@@ -21,16 +21,27 @@
 module;
 
 #include <stdexcept>
-
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 module glfw;
 
 namespace glfw
 {
-    JoystickFunction setJoystickCallback(JoystickFunction callback)
+    JoystickFunction* setJoystickCallback(JoystickFunction* callback)
     {
-        return glfwSetJoystickCallback(callback);
+        static JoystickFunction* joystickCallback = callback;
+        if(callback)
+        {
+            glfwSetJoystickCallback([](int jid, int event)
+            {
+                Joystick* joystickPointer = static_cast<Joystick *>(glfwGetJoystickUserPointer(jid));
+                joystickCallback(joystickPointer, event);
+            });
+            return callback;
+        }
+
+        glfwSetJoystickCallback(nullptr);
+        return callback;
     }
 
     void updateGamepadMappings(const char* string)
@@ -42,20 +53,34 @@ namespace glfw
         }
     }
 
-    Joystick::Joystick() : jid(0) {}
+    Joystick::Joystick() : Joystick(-1) {}
 
-    Joystick::Joystick(JoystickType jid) : jid(jid) {}
+    Joystick::Joystick(JoystickType jid) : Joystick(static_cast<int>(jid)) {}
 
-    Joystick::Joystick(int jid) : jid(jid) {}
-
-    Joystick::operator int() const
+    Joystick::Joystick(int jid) : jid(jid)
     {
-        return jid;
+        if(jid != -1)
+        {
+            if(getUserPointer() != nullptr)
+            {
+                throw std::runtime_error("Joystick already exists or userdata is in use");
+            }
+            setUserPointer(this);
+        }
     }
 
-    Joystick::operator bool() const
+    Joystick::~Joystick()
     {
-        return jid != 0;
+        if(jid != -1)
+        {
+            setUserPointer(nullptr);
+            jid = -1;
+        }
+    }
+
+    int Joystick::get() const
+    {
+        return jid;
     }
 
     bool Joystick::present() const

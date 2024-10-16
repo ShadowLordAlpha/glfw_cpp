@@ -24,6 +24,8 @@ module;
 #include <string>
 #include <glfw/glfw3.h>
 
+#include "../external/glfw/src/internal.h"
+
 export module glfw:monitor;
 
 import :type;
@@ -34,29 +36,29 @@ export namespace glfw
 
     [[nodiscard]] inline std::vector<Monitor> getMonitors();
     [[nodiscard]] inline Monitor getPrimaryMonitor();
-    inline MonitorFunction setMonitorCallback(MonitorFunction callback = nullptr); // TODO: properly figure this out...
+    inline MonitorFunction* setMonitorCallback(MonitorFunction* callback = nullptr); // TODO: properly figure this out...
 
     class Monitor
     {
     public:
         Monitor();
-        Monitor(GLFWmonitor* monitor); // NOLINT(*-explicit-constructor)
+        Monitor(GLFWmonitor* ptr);
 
-        operator GLFWmonitor*() const; // NOLINT(*-explicit-constructor)
-        operator bool() const; // NOLINT(*-explicit-constructor)
+        operator GLFWmonitor*() const;
+        [[nodiscard]] GLFWmonitor* get() const;
 
         [[nodiscard]] Position<int> getPos() const;
         [[nodiscard]] WorkArea getWorkarea() const;
         [[nodiscard]] Size getPhysicalSize() const;
         [[nodiscard]] Scale getContentScale() const;
         [[nodiscard]] const std::string& getName() const;
-        void setUserPointer(void* pointer);
+        [[nodiscard]] std::vector<VideoMode> getVideoModes() const;
+        [[nodiscard]] const VideoMode* getVideoMode() const;
+        void setGamma(float gamma) const;
+        [[nodiscard]] const GammaRamp* getGammaRamp() const;
+        void setGammaRamp(const GammaRamp* ramp) const;
+        void setUserPointer(void* pointer) const;
         [[nodiscard]] void* getUserPointer() const;
-        [[nodiscard]] const std::vector<const VideoMode> getVideoModes(); // TODO: check if this should be a reference, it might be better to have it as such then as a copy
-        [[nodiscard]] const VideoMode getVideoMode() const;
-        void setGamma(float gamma);
-        [[nodiscard]] GammaRamp getGammaRamp() const;
-        void setGammaRamp(GammaRamp ramp);
 
     private:
         GLFWmonitor* ptr;

@@ -45,26 +45,39 @@ namespace glfw
 
     Monitor getPrimaryMonitor()
     {
-        return glfwGetPrimaryMonitor();
+        auto glfwMonitor = glfwGetPrimaryMonitor();
+        return glfwMonitor;
     }
 
-    MonitorFunction setMonitorCallback(MonitorFunction callback) // TODO: properly figure this out...
+    MonitorFunction* setMonitorCallback(MonitorFunction* callback)
     {
-        return glfwSetMonitorCallback(callback);
+        static MonitorFunction* monitorCallback = callback;
+        if(callback == nullptr)
+        {
+            glfwSetMonitorCallback(nullptr);
+        }
+        else
+        {
+            glfwSetMonitorCallback([](GLFWmonitor* monitor, int event)
+            {
+                monitorCallback(monitor, event);
+            });
+        }
+        return callback;
     }
 
     Monitor::Monitor() : Monitor(nullptr) {}
 
-    Monitor::Monitor(GLFWmonitor* monitor) : ptr(monitor) {}
+    Monitor::Monitor(GLFWmonitor* ptr) : ptr(ptr) {}
 
     Monitor::operator GLFWmonitor*() const
     {
-        return ptr;
+        return get();
     }
 
-    Monitor::operator bool() const
+    GLFWmonitor* Monitor::get() const
     {
-        return ptr != nullptr;
+        return ptr;
     }
 
     Position<int> Monitor::getPos() const
@@ -100,7 +113,7 @@ namespace glfw
         return glfwGetMonitorName(ptr);
     }
 
-    void Monitor::setUserPointer(void* pointer)
+    void Monitor::setUserPointer(void* pointer) const
     {
         glfwSetMonitorUserPointer(ptr, pointer);
     }
@@ -110,37 +123,32 @@ namespace glfw
         return glfwGetMonitorUserPointer(ptr);
     }
 
-    const std::vector<const VideoMode> Monitor::getVideoModes()
+    std::vector<VideoMode> Monitor::getVideoModes() const
     {
         int count;
-        auto nModes = glfwGetVideoModes(ptr, &count);
+        const GLFWvidmode* nModes = glfwGetVideoModes(ptr, &count);
 
-        std::vector<const VideoMode> modes;
-        modes.reserve(count);
-        for(int i = 0; i < count; ++i)
-        {
-            modes.push_back(nModes[i]);
-        }
+        std::vector modes(nModes, nModes + count);
         return modes;
     }
 
-    const VideoMode Monitor::getVideoMode() const
+    const VideoMode* Monitor::getVideoMode() const
     {
-        return *glfwGetVideoMode(ptr);
+        return glfwGetVideoMode(ptr);
     }
 
-    void Monitor::setGamma(float gamma)
+    void Monitor::setGamma(float gamma) const
     {
         glfwSetGamma(ptr, gamma);
     }
 
-    GammaRamp Monitor::getGammaRamp() const
+    const GammaRamp* Monitor::getGammaRamp() const
     {
-        return *glfwGetGammaRamp(ptr);
+        return glfwGetGammaRamp(ptr);
     }
 
-    void Monitor::setGammaRamp(GammaRamp ramp)
+    void Monitor::setGammaRamp(const GammaRamp* ramp) const
     {
-        glfwSetGammaRamp(ptr, &ramp);
+        glfwSetGammaRamp(ptr, ramp);
     }
 }

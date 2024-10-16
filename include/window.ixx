@@ -95,6 +95,7 @@ export namespace glfw
         void setAttrib(int attrib, int value); // TODO: enum values?
         void setUserPointer(void* pointer);
         [[nodiscard]] void* getUserPointer() const;
+        WindowPosFunction setWindowPosCallback(WindowPosFunction callback);
         // TODO
         /*
         GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindowposfun callback);
@@ -135,5 +136,6 @@ export namespace glfw
         // TODO: should glfwCreateWindowSurface go in here? it kinda matches so possibly?
     private:
         std::unique_ptr<GLFWwindow, Deleter> ptr;
+        void* user; // welp... bullshit needed for this now...
     };
 }
