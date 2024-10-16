@@ -51,7 +51,7 @@ namespace glfw
 
     MonitorFunction* setMonitorCallback(MonitorFunction* callback)
     {
-        static MonitorFunction* monitorCallback = callback;
+        static MonitorFunction monitorCallback = *callback;
         if(callback == nullptr)
         {
             glfwSetMonitorCallback(nullptr);

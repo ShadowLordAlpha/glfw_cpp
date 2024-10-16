@@ -67,8 +67,8 @@ export namespace glfw
         [[nodiscard]] bool shouldClose() const;
         void setShouldClose(bool value);
         [[nodiscard]] const char* getTitle() const;
-        void setTitle(const char*) const;
-        void setIcon(const std::vector<const Image>& images); // TODO: implement once Image is implemented, does it need to be optional?
+        void setTitle(const char* title) const;
+        void setIcon(const std::vector<Image>& images); // TODO: implement once Image is implemented, does it need to be optional?
         [[nodiscard]] Position<int> getPos() const;
         void setPos(Position<int> pos);
         [[nodiscard]] Size getSize() const;

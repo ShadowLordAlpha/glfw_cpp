@@ -52,7 +52,6 @@ target_sources(glfw_cpp
         src/joystick.cpp
         src/window.cpp
         src/cursor.cpp
-        src/version.cpp
 )
 
 if (GLFW_CPP_BUILD_EXAMPLES)

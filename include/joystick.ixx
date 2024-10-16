@@ -39,7 +39,7 @@ export namespace glfw
         Joystick(JoystickType jid); // NOLINT(*-explicit-constructor)
         Joystick(int jid); // NOLINT(*-explicit-constructor)
 
-        operator int() const;
+        operator int() const; // NOLINT(*-explicit-constructor)
         [[nodiscard]] int get() const;
 
         [[nodiscard]] bool present() const;

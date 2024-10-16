@@ -31,6 +31,7 @@ export namespace glfw
     class Joystick;
     class Monitor;
 
+    using Allocator = GLFWallocator;
     using GamepadState = GLFWgamepadstate;
     using JoystickFunction = std::function<void(Joystick, int)>; // GLFWjoystickfun;
 

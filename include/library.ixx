@@ -30,15 +30,15 @@ import :type;
 export namespace glfw
 {
 
-    inline void glfwInitHint(int hint, int value);
-    inline void glfwInitAllocator(const GLFWallocator *allocator);
+    inline void initHint(int hint, int value);
+    inline void initAllocator(const Allocator *allocator);
     // inline void glfwInitVulkanLoader(PFN_vkGetInstanceProcAddr loader) // TODO
     [[nodiscard]] constexpr Version getCompileTimeVersion();
     [[nodiscard]] inline Version getVersion();
     [[nodiscard]] inline const char* getVersionString();
-    [[nodiscard]] inline const std::string& getError(); // TODO: check what returns when there is no error
+    [[nodiscard]] inline const std::string getError(); // TODO: check what returns when there is no error
     [[nodiscard]] inline ErrorFun setErrorCallback(ErrorFun fun);
-    inline void getPlatform();
+    inline int getPlatform();
     bool platformSupported(int platform); // TODO: type checked method
     inline void pollEvents();
     inline void waitEvents();

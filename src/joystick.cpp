@@ -29,7 +29,7 @@ namespace glfw
 {
     JoystickFunction* setJoystickCallback(JoystickFunction* callback)
     {
-        static JoystickFunction* joystickCallback = callback;
+        static JoystickFunction joystickCallback = *callback;
         if(callback)
         {
             glfwSetJoystickCallback([](int jid, int event)

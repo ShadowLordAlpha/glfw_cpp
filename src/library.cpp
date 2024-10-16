@@ -28,40 +28,57 @@ module glfw;
 
 namespace glfw
 {
-    Library::Library()
+    void initHint(int hint, int value) // TODO: type and enums
     {
-        if(!glfwInit())
-        {
-            throw std::runtime_error(getError());
-        }
+        glfwInitHint(hint, value);
     }
 
-    Library::~Library()
+    void initAllocator(const Allocator *allocator)
     {
-        glfwTerminate();
+        glfwInitAllocator(allocator);
     }
 
+    // inline void glfwInitVulkanLoader(PFN_vkGetInstanceProcAddr loader) // TODO
 
-
-
-
-    void setErrorCallback(ErrorFun fun)
+    constexpr Version getCompileTimeVersion()
     {
-        // We could do our own error function with asserts but we want to stay as close to the glfw interface as
-        //  possible currently.
-        glfwSetErrorCallback(fun);
+        return {GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION};
     }
 
-    double getTime()
+    Version getVersion()
     {
-        return glfwGetTime();
+        Version version{};
+        glfwGetVersion(&version.major, &version.minor, &version.revision);
+        return version;
     }
 
-    const std::string& getError()
+    const char* getVersionString()
+    {
+        return glfwGetVersionString();
+    }
+
+    const std::string getError()
     {
         const char* description;
         glfwGetError(&description);
         return description;
+    }
+
+    ErrorFun setErrorCallback(ErrorFun fun)
+    {
+        // We could do our own error function with asserts but we want to stay as close to the glfw interface as
+        //  possible currently.
+        return glfwSetErrorCallback(fun);
+    }
+
+    int getPlatform()
+    {
+        return glfwGetPlatform();
+    }
+
+    bool platformSupported(int platform) // TODO: type checked method
+    {
+        return glfwPlatformSupported(platform) == GLFW_TRUE;
     }
 
     void pollEvents()
@@ -74,13 +91,87 @@ namespace glfw
         glfwWaitEvents();
     }
 
+    void waitEventsTimeout(double timeout)
+    {
+        glfwWaitEventsTimeout(timeout);
+    }
+
+    void postEmptyEvent()
+    {
+        glfwPostEmptyEvent();
+    }
+
+    bool rawMouseMotionSupport()
+    {
+        return glfwRawMouseMotionSupported();
+    }
+
+    const char* getKeyName(int key, int scancode) // TODO: type checked method
+    {
+        return glfwGetKeyName(key, scancode);
+    }
+
+    int getKeyScancode(int key) // TODO: type checked method?
+    {
+        return glfwGetKeyScancode(key);
+    }
+
+    double getTime()
+    {
+        return glfwGetTime();
+    }
+
+    void setTime(double time)
+    {
+        glfwSetTime(time);
+    }
+
+    uint64_t getTimerValue()
+    {
+        return glfwGetTimerValue();
+    }
+
+    uint64_t getTimerFrequency()
+    {
+        return glfwGetTimerFrequency();
+    }
+
     void swapInterval(int interval)
     {
         glfwSwapInterval(interval);
     }
 
+    [[nodiscard]] inline bool extensionSupported(const char* extension);
+
     glProc getProcAddress(const char* procname)
     {
         return glfwGetProcAddress(procname);
+    }
+
+    bool vulkanSupported()
+    {
+        return glfwVulkanSupported();
+    }
+
+    const char** getRequiredInstanceExtensions(uint32_t* count)
+    {
+        return glfwGetRequiredInstanceExtensions(count);
+    }
+
+    // inline GLFWvkproc getInstanceProcAddress (VkInstance instance, const char *procname); // TODO:
+    // bool getPhysicalDevicePresentationSupport(VkInstance instance, VkPhysicalDevice device, uint32_t queuefamily);
+    // VkResult createWindowSurface(VkInstance instance, GLFWwindow *window, const VkAllocationCallbacks *allocator, VkSurfaceKHR *surface); // TODO: should this be part of Window instead?
+
+    Library::Library()
+    {
+        if(!glfwInit())
+        {
+            throw std::runtime_error(getError());
+        }
+    }
+
+    Library::~Library()
+    {
+        glfwTerminate();
     }
 }

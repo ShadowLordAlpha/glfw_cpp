@@ -42,9 +42,9 @@ export namespace glfw
     {
     public:
         Monitor();
-        Monitor(GLFWmonitor* ptr);
+        Monitor(GLFWmonitor* ptr); // NOLINT(*-explicit-constructor)
 
-        operator GLFWmonitor*() const;
+        operator GLFWmonitor*() const; // NOLINT(*-explicit-constructor)
         [[nodiscard]] GLFWmonitor* get() const;
 
         [[nodiscard]] Position<int> getPos() const;

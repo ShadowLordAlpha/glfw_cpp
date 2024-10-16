@@ -105,19 +105,63 @@ namespace glfw
         return ptr.get() != nullptr;
     }
 
-    void Window::makeContextCurrent()
-    {
-        glfwMakeContextCurrent(ptr.get());
-    }
-
     bool Window::shouldClose() const
     {
         return glfwWindowShouldClose(ptr.get());
     }
 
-    void Window::swapBuffers()
+    void Window::setShouldClose(bool value)
     {
-        glfwSwapBuffers(*this);
+        glfwSetWindowShouldClose(ptr.get(), value);
+    }
+
+    const char* Window::getTitle() const
+    {
+        return glfwGetWindowTitle(ptr.get());
+    }
+
+    void Window::setTitle(const char* title) const
+    {
+        glfwSetWindowTitle(ptr.get(), title);
+    }
+
+    void Window::setIcon(const std::vector<Image>& images) // TODO: implement once Image is implemented, does it need to be optional?
+    {
+        glfwSetWindowIcon(ptr.get(), images.size(), images.data());
+    }
+
+    Position<int> Window::getPos() const
+    {
+        int x, y;
+        glfwGetWindowPos(ptr.get(), &x, &y);
+        return {x, y};
+    }
+
+    void Window::setPos(Position<int> pos)
+    {
+        glfwSetWindowPos(ptr.get(), pos.x, pos.y);
+    }
+
+    Size Window::getSize() const
+    {
+        int width, height;
+        glfwGetWindowSize(ptr.get(), &width, &height);
+        return {width, height};
+    }
+
+    void Window::setSizeLimits(Size min, Size max)
+    {
+        glfwSetWindowSizeLimits(ptr.get(), min.width, min.height, max.width, max.height);
+    }
+
+    void Window::setAspectRatio(int numer, int denom)
+    {
+        glfwSetWindowAspectRatio(ptr.get(), numer, denom);
+    }
+
+    void Window::setSize(Size size)
+    {
+        glfwSetWindowSize(ptr.get(), size.width, size.height);
     }
 
     Size Window::getFramebufferSize() const
@@ -127,10 +171,115 @@ namespace glfw
         return {width, height};
     }
 
-    WindowPosFunction Window::setWindowPosCallback(WindowPosFunction callback)
+    FrameSize Window::getFrameSize()
     {
-        glfwSetWindowPosCallback(ptr.get(), [](GLFWwindow* window, int x, int y));
-        return callback;
+        int left, right, top, bottom;
+        glfwGetWindowFrameSize(ptr.get(), &left, &top, &right, &bottom);
+        return {left, top, right, bottom};
+    }
+
+    Scale Window::getContentScale()
+    {
+        float width, height;
+        glfwGetWindowContentScale(ptr.get(), &width, &height);
+        return {width, height};
+    }
+
+    float Window::getOpacity() const
+    {
+        return glfwGetWindowOpacity(ptr.get());
+    }
+
+    void Window::setOpacity(float opacity)
+    {
+        glfwSetWindowOpacity(ptr.get(), opacity);
+    }
+
+    void Window::iconify()
+    {
+        glfwIconifyWindow(ptr.get());
+    }
+
+    void Window::restore()
+    {
+        glfwRestoreWindow(ptr.get());
+    }
+
+    void Window::maximize()
+    {
+        glfwMaximizeWindow(ptr.get());
+    }
+
+    void Window::show()
+    {
+        glfwShowWindow(ptr.get());
+    }
+
+    void Window::hide()
+    {
+        glfwHideWindow(ptr.get());
+    }
+
+    void Window::focus()
+    {
+        glfwFocusWindow(ptr.get());
+    }
+
+    void Window::requestAttention()
+    {
+        glfwRequestWindowAttention(ptr.get());
+    }
+
+    Monitor Window::getMonitor()
+    {
+        return glfwGetWindowMonitor(ptr.get());
+    }
+
+    void Window::setMonitor(Monitor monitor, Position<int> pos, Size size, int refreshRate)
+    {
+        glfwSetWindowMonitor(ptr.get(), monitor, pos.x, pos.y, size.width, size.height, refreshRate);
+    }
+
+    int Window::getAttrib(int attrib) const // TODO: enum values?
+    {
+        return glfwGetWindowAttrib(ptr.get(), attrib);
+    }
+
+    void Window::setAttrib(int attrib, int value) // TODO: enum values?
+    {
+        glfwSetWindowAttrib(ptr.get(), attrib, value);
+    }
+
+    void Window::setUserPointer(void* pointer)
+    {
+        glfwSetWindowUserPointer(ptr.get(), pointer);
+    }
+
+    void* Window::getUserPointer() const
+    {
+        return glfwGetWindowUserPointer(ptr.get());
+    }
+
+        // TODO
+        /*
+        WindowPosFunction setWindowPosCallback(WindowPosFunction callback);
+        GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindowposfun callback);
+        GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindowsizefun callback);
+        GLFWwindowclosefun glfwSetWindowCloseCallback(GLFWwindowclosefun callback);
+        GLFWwindowrefreshfun glfwSetWindowRefreshCallback(GLFWwindowrefreshfun callback);
+        GLFWwindowfocusfun glfwSetWindowFocusCallback(GLFWwindowfocusfun callback);
+        GLFWwindowiconifyfun glfwSetWindowIconifyCallback(GLFWwindowiconifyfun callback);
+        GLFWwindowmaximizefun glfwSetWindowMaximizeCallback(GLFWwindowmaximizefun callback);
+        GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWframebuffersizefun callback);
+        GLFWwindowcontentscalefun glfwSetWindowContentScaleCallback(GLFWwindowcontentscalefun callback);
+         */
+    int Window::getInputMode(InputMode mode) // Type checked/convince overload
+    {
+        return getInputMode(static_cast<int>(mode));
+    }
+    int Window::getInputMode(int mode)
+    {
+        return glfwGetInputMode(ptr.get(), mode);
     }
 
     void Window::setInputMode(InputMode mode, bool value)
@@ -145,11 +294,63 @@ namespace glfw
 
     void Window::setInputMode(int mode, int value)
     {
-        glfwSetInputMode(*this, mode, value);
+        glfwSetInputMode(ptr.get(), mode, value);
     }
 
     int Window::getKey(int key) const
     {
-        return glfwGetKey(*this, key);
+        return glfwGetKey(ptr.get(), key);
+    }
+
+    int Window::getMouseButton(int button) const // TODO: type checked method
+    {
+        return glfwGetMouseButton(ptr.get(), button);
+    }
+
+    Position<double> Window::getCursorPos() const
+    {
+        double x, y;
+        glfwGetCursorPos(ptr.get(), &x, &y);
+        return {x, y};
+    }
+
+    void Window::setCursorPos(Position<double> pos)
+    {
+        glfwSetCursorPos(ptr.get(), pos.x, pos.y);
+    }
+
+    void Window::setCursor(Cursor* cursor)
+    {
+        glfwSetCursor(ptr.get(), *cursor);
+    }
+
+    /*
+        GLFWkeyfun glfwSetKeyCallback(GLFWkeyfun callback);
+        GLFWcharfun glfwSetCharCallback(GLFWcharfun callback);
+        GLFWcharmodsfun glfwSetCharModsCallback(GLFWcharmodsfun callback);
+        GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWmousebuttonfun callback);
+        GLFWcursorposfun glfwSetCursorPosCallback(GLFWcursorposfun callback);
+        GLFWcursorenterfun glfwSetCursorEnterCallback(GLFWcursorenterfun callback);
+        GLFWscrollfun glfwSetScrollCallback(GLFWscrollfun callback);
+        GLFWdropfun glfwSetDropCallback(GLFWdropfun callback);
+        */
+    void Window::setClipboardString(const char* string)
+    {
+        glfwSetClipboardString(ptr.get(), string);
+    }
+
+    const char* Window::getClipboardString()
+    {
+        return glfwGetClipboardString(ptr.get());
+    }
+
+    void Window::makeContextCurrent()
+    {
+        glfwMakeContextCurrent(ptr.get());
+    }
+
+    void Window::swapBuffers()
+    {
+        glfwSwapBuffers(ptr.get());
     }
 }
