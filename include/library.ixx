@@ -37,7 +37,7 @@ export namespace glfw
     [[nodiscard]] inline Version getVersion();
     [[nodiscard]] inline const char* getVersionString();
     [[nodiscard]] inline const std::string getError(); // TODO: check what returns when there is no error
-    [[nodiscard]] inline ErrorFun setErrorCallback(ErrorFun fun);
+    inline ErrorFun setErrorCallback(ErrorFun fun);
     inline int getPlatform();
     bool platformSupported(int platform); // TODO: type checked method
     inline void pollEvents();

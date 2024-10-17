@@ -81,7 +81,7 @@ int main()
             window.swapBuffers();
 
             if (window.shouldClose() ||
-                window.getKey(256/*GLFW_KEY_ESCAPE*/))
+                window.getKey(GLFW_KEY_ESCAPE))
             {
                 return EXIT_SUCCESS;
             }

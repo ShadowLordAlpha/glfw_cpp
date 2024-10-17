@@ -10,4 +10,7 @@ else ()
     add_executable(wave wave.cpp)
     target_link_libraries(wave PRIVATE glad glfw_cpp)
     include_directories(../external)
+
+    add_executable(boing boing.cpp)
+    target_link_libraries(boing PRIVATE glad glfw_cpp)
 endif ()

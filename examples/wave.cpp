@@ -320,11 +320,13 @@ void mouse_button_callback(glfw::Window& window, int button, int action, int mod
 
     if (action == GLFW_PRESS)
     {
-        window.setInputMode(glfw::InputMode::CURSOR, GLFW_CURSOR_DISABLED);
-        window.getCursorPos(&cursorX, &cursorY);
+        window.setInputMode(glfw::InputMode::CURSOR, glfw::InputValue::CURSOR_DISABLED);
+        auto [x, y] = window.getCursorPos();
+        cursorX = x;
+        cursorY = y;
     }
     else
-        window.setInputMode(glfw::InputMode::CURSOR, GLFW_CURSOR_NORMAL);
+        window.setInputMode(glfw::InputMode::CURSOR, glfw::InputValue::CURSOR_NORMAL);
 }
 
 

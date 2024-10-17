@@ -60,7 +60,7 @@ namespace glfw
         {
             glfwSetMonitorCallback([](GLFWmonitor* monitor, int event)
             {
-                monitorCallback(monitor, event);
+                monitorCallback(monitor, static_cast<MonitorEvent>(event));
             });
         }
         return callback;

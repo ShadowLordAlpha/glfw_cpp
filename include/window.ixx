@@ -52,15 +52,16 @@ export namespace glfw
     inline void windowHint(int hint, const char* value);
     inline void windowHint(int hint, int value);
 
-    inline Window getCurrentContext();
+    inline Window* getCurrentContext();
 
     class Window
     {
     public:
         Window();
-        Window(int width, int height, const char* title, GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
+        Window(int width, int height, const char* title, Monitor* monitor = nullptr, Window* share = nullptr);
         explicit Window(GLFWwindow* window);
 
+        GLFWwindow* get() const;
         operator GLFWwindow*() const; // NOLINT(*-explicit-constructor)
         operator bool() const; // NOLINT(*-explicit-constructor)
 
@@ -89,53 +90,66 @@ export namespace glfw
         void focus();
         void requestAttention();
 
-        Monitor getMonitor();
+        [[nodiscard]] Monitor getMonitor();
         void setMonitor(Monitor monitor, Position<int> pos, Size size, int refreshRate);
         [[nodiscard]] int getAttrib(int attrib) const; // TODO: enum values?
         void setAttrib(int attrib, int value); // TODO: enum values?
         void setUserPointer(void* pointer);
         [[nodiscard]] void* getUserPointer() const;
-        WindowPosFunction setWindowPosCallback(WindowPosFunction callback);
-        // TODO
-        /*
-        GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindowposfun callback);
-        GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindowsizefun callback);
-        GLFWwindowclosefun glfwSetWindowCloseCallback(GLFWwindowclosefun callback);
-        GLFWwindowrefreshfun glfwSetWindowRefreshCallback(GLFWwindowrefreshfun callback);
-        GLFWwindowfocusfun glfwSetWindowFocusCallback(GLFWwindowfocusfun callback);
-        GLFWwindowiconifyfun glfwSetWindowIconifyCallback(GLFWwindowiconifyfun callback);
-        GLFWwindowmaximizefun glfwSetWindowMaximizeCallback(GLFWwindowmaximizefun callback);
-        GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWframebuffersizefun callback);
-        GLFWwindowcontentscalefun glfwSetWindowContentScaleCallback(GLFWwindowcontentscalefun callback);
-         */
-        int getInputMode(InputMode mode); // Type checked/convince overload
-        int getInputMode(int mode);
+        WindowPosFunction setPosCallback(WindowPosFunction callback = nullptr);
+        WindowSizeFunction setSizeCallback(WindowSizeFunction callback = nullptr);
+        WindowCloseFunction setCloseCallback(WindowCloseFunction callback = nullptr);
+        WindowRefreshFunction setRefreshCallback(WindowRefreshFunction callback = nullptr);
+        WindowFocusFunction setFocusCallback(WindowFocusFunction callback = nullptr);
+        WindowIconifyFunction setIconifyCallback(WindowIconifyFunction callback = nullptr);
+        WindowMaximizeFunction setMaximizeCallback(WindowMaximizeFunction callback = nullptr);
+        FrameBufferSizeFunction setFramebufferSizeCallback(FrameBufferSizeFunction callback = nullptr);
+        WindowContentScaleFunction setContentScaleCallback(WindowContentScaleFunction callback = nullptr);
+        [[nodiscard]] int getInputMode(InputMode mode); // Type checked/convince overload
+        [[nodiscard]] int getInputMode(int mode);
         void setInputMode(InputMode mode, bool value); // Type checked/convince overload
         void setInputMode(InputMode mode, InputValue value); // Type checked/convince overload
         void setInputMode(int mode, int value);
-        int getKey(int key) const; // TODO: type checked method
-        int getMouseButton(int button) const; // TODO: type checked method
-        Position<double> getCursorPos() const;
+        [[nodiscard]] int getKey(int key) const; // TODO: type checked method
+        [[nodiscard]] int getMouseButton(int button) const; // TODO: type checked method
+        [[nodiscard]] Position<double> getCursorPos() const;
         void setCursorPos(Position<double> pos);
         void setCursor(Cursor* cursor = nullptr); // TODO: check if we can pass a glfw cursor to this method, if not we may need to use the other type as we don't want to force us holding the object
-        /*
-        GLFWkeyfun glfwSetKeyCallback(GLFWkeyfun callback);
-        GLFWcharfun glfwSetCharCallback(GLFWcharfun callback);
-        GLFWcharmodsfun glfwSetCharModsCallback(GLFWcharmodsfun callback);
-        GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWmousebuttonfun callback);
-        GLFWcursorposfun glfwSetCursorPosCallback(GLFWcursorposfun callback);
-        GLFWcursorenterfun glfwSetCursorEnterCallback(GLFWcursorenterfun callback);
-        GLFWscrollfun glfwSetScrollCallback(GLFWscrollfun callback);
-        GLFWdropfun glfwSetDropCallback(GLFWdropfun callback);
-        */
+        KeyFunction setKeyCallback(KeyFunction callback);
+        CharFunction setCharCallback(CharFunction callback);
+        CharModsFunction setCharModsCallback(CharModsFunction callback);
+        MouseButtonFunction setMouseButtonCallback(MouseButtonFunction callback);
+        CursorPosFunction setCursorPosCallback(CursorPosFunction callback);
+        CursorEnterFunction setCursorEnterCallback(CursorEnterFunction callback);
+        ScrollFunction setScrollCallback(ScrollFunction callback);
+        DropFunction setDropCallback(DropFunction callback);
         void setClipboardString(const char* string);
-        const char* getClipboardString();
+        [[nodiscard]] const char* getClipboardString();
         void makeContextCurrent();
         void swapBuffers();
 
         // TODO: should glfwCreateWindowSurface go in here? it kinda matches so possibly?
     private:
         std::unique_ptr<GLFWwindow, Deleter> ptr;
-        void* user; // welp... bullshit needed for this now...
+        void* user;
+
+        WindowPosFunction windowPosFunction;
+        WindowSizeFunction windowSizeFunction;
+        WindowCloseFunction windowCloseFunction;
+        WindowRefreshFunction windowRefreshFunction;
+        WindowFocusFunction windowFocusFunction;
+        WindowIconifyFunction windowIconifyFunction;
+        WindowMaximizeFunction windowMaximizeFunction;
+        FrameBufferSizeFunction windowFrameBufferSizeFunction;
+        WindowContentScaleFunction windowContentScaleFunction;
+
+        KeyFunction keyFunction;
+        CharFunction charFunction;
+        CharModsFunction charModsFunction;
+        MouseButtonFunction mouseButtonFunction;
+        CursorPosFunction cursorPosFunction;
+        CursorEnterFunction cursorEnterFunction;
+        ScrollFunction scrollFunction;
+        DropFunction dropFunction;
     };
 }

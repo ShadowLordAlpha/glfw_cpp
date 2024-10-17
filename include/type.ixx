@@ -35,6 +35,77 @@ export namespace glfw
     using GamepadState = GLFWgamepadstate;
     using JoystickFunction = std::function<void(Joystick, int)>; // GLFWjoystickfun;
 
+    enum class MonitorEvent
+    {
+        CONNECTED = GLFW_CONNECTED,
+        DISCONNECTED = GLFW_DISCONNECTED,
+    };
+
+    // TODO: test if we can use our value instead
+    using MonitorFunction = std::function<void(Monitor, MonitorEvent)>;
+
+    // Redefine structs to be within our namespace
+    using ErrorFun = GLFWerrorfun;
+    using glProc = GLFWglproc;
+    using Image = GLFWimage;
+    using VideoMode = GLFWvidmode;
+    using GammaRamp = GLFWgammaramp;
+
+    template<typename type>
+    struct Position
+    {
+        type x, y;
+    };
+
+    struct Size
+    {
+        int width, height;
+    };
+
+    struct Scale // This "could" be a Position<float> but that would kinda break type checking and the two are not the same
+    {
+        float x, y;
+    };
+
+    using WindowPosFunction = std::function<void(Window& window, Position<int> pos)>;
+    using WindowSizeFunction = std::function<void(Window& window, Size size)>;
+    using WindowCloseFunction = std::function<void(Window& window)>;
+    using WindowRefreshFunction = std::function<void(Window& window)>;
+    using WindowFocusFunction = std::function<void(Window& window, bool focused)>;
+    using WindowIconifyFunction = std::function<void(Window& window, bool iconified)>;
+    using WindowMaximizeFunction = std::function<void(Window& window, bool maximized)>;
+    using FrameBufferSizeFunction = std::function<void(Window& window, Size size)>;
+    using WindowContentScaleFunction = std::function<void(Window& window, Scale scale)>;
+
+    using KeyFunction = std::function<void(Window& window, int key, int scancode, int action, int mods)>;
+    using CharFunction = std::function<void(Window& window, unsigned int codepoint)>;
+    using CharModsFunction = std::function<void(Window& window, unsigned int codepoint, int mods)>;
+    using MouseButtonFunction = std::function<void(Window& window, int button, int action, int mods)>;
+    using CursorPosFunction = std::function<void(Window& window, Position<double>  pos)>;
+    using CursorEnterFunction = std::function<void(Window& window, bool entered)>;
+    using ScrollFunction = std::function<void(Window& window, Position<double> offset)>;
+    using DropFunction = std::function<void(Window& window, int path_count, const char* paths[])>;
+
+    struct Version
+    {
+        int major;
+        int minor;
+        int revision;
+    };
+
+    struct WorkArea
+    {
+        int x, y;
+        int width, height;
+    };
+
+    struct FrameSize
+    {
+        int left, top, right, bottom;
+    };
+
+
+
     enum JoystickType
     {
         JOYSTICK_1 = GLFW_JOYSTICK_1,
@@ -53,54 +124,6 @@ export namespace glfw
         JOYSTICK_14 = GLFW_JOYSTICK_14,
         JOYSTICK_15 = GLFW_JOYSTICK_15,
         JOYSTICK_16 = GLFW_JOYSTICK_16,
-    };
-
-    // TODO: test if we can use our value instead
-    //typedef (* MonitorFunction)(Monitor monitor, int event); // We want to use the Monitor object so we can't directly use GLFWmonitorfun
-    using MonitorFunction = std::function<void(Monitor, int)>;
-    // using MonitorFunction = GLFWmonitorfun;
-
-    // Redefine structs to be within our namespace
-    using ErrorFun = GLFWerrorfun;
-    using glProc = GLFWglproc;
-    using Image = GLFWimage;
-    using VideoMode = GLFWvidmode;
-    using GammaRamp = GLFWgammaramp;
-
-    using WindowPosFunction = std::function<void(GLFWwindow* window, int x, int y)>;
-
-    struct Version
-    {
-        int major;
-        int minor;
-        int revision;
-    };
-
-    struct WorkArea
-    {
-        int x, y;
-        int width, height;
-    };
-
-    template<typename type>
-    struct Position
-    {
-        type x, y;
-    };
-
-    struct Size
-    {
-        int width, height;
-    };
-
-    struct Scale // This "could" be a Position<float> but that would kinda break type checking and the two are not the same
-    {
-        float x, y;
-    };
-
-    struct FrameSize
-    {
-        int left, top, right, bottom;
     };
 
     enum class InputValue
