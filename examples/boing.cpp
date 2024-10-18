@@ -241,9 +241,9 @@ void reshape(glfw::Window& window, int w, int h )
    glLoadMatrixf((const GLfloat*) view);
 }
 
-void key_callback(glfw::Window& window, int key, int scancode, int action, int mods)
+void key_callback(glfw::Window& window, int key, int scancode, glfw::Action action, int mods)
 {
-    if (action != GLFW_PRESS)
+    if (action != glfw::Action::PRESS)
         return;
 
     if (key == GLFW_KEY_ESCAPE && mods == 0)

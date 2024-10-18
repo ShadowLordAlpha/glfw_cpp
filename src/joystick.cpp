@@ -34,7 +34,7 @@ namespace glfw
         {
             glfwSetJoystickCallback([](int jid, int event)
             {
-                joystickCallback(jid, event);
+                joystickCallback(jid, static_cast<ConnectionEvent>(event));
             });
             return callback;
         }

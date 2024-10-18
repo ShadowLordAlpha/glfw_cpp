@@ -110,8 +110,8 @@ export namespace glfw
         void setInputMode(InputMode mode, bool value); // Type checked/convince overload
         void setInputMode(InputMode mode, InputValue value); // Type checked/convince overload
         void setInputMode(int mode, int value);
-        [[nodiscard]] int getKey(int key) const; // TODO: type checked method
-        [[nodiscard]] int getMouseButton(int button) const; // TODO: type checked method
+        [[nodiscard]] KeyAction getKey(Key key) const; // TODO: type checked method
+        [[nodiscard]] KeyAction getMouseButton(MouseButton button) const; // TODO: type checked method
         [[nodiscard]] Position<double> getCursorPos() const;
         void setCursorPos(Position<double> pos);
         void setCursor(Cursor* cursor = nullptr); // TODO: check if we can pass a glfw cursor to this method, if not we may need to use the other type as we don't want to force us holding the object

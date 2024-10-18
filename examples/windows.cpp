@@ -81,7 +81,7 @@ int main()
             window.swapBuffers();
 
             if (window.shouldClose() ||
-                window.getKey(GLFW_KEY_ESCAPE))
+                window.getKey(glfw::Key::ESCAPE) == glfw::KeyAction::PRESS)
             {
                 return EXIT_SUCCESS;
             }

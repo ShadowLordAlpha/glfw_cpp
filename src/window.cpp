@@ -89,7 +89,10 @@ namespace glfw
 
     GLFWwindow* createWindow(int width, int height, const char *title, Monitor* monitor, Window* share)
     {
-        auto windowPtr = glfwCreateWindow(width, height, title, monitor->get(), share->get());
+        GLFWmonitor* mon = monitor == nullptr ? nullptr: *monitor;
+        GLFWwindow* win = share == nullptr ? nullptr: *share;
+
+        auto windowPtr = glfwCreateWindow(width, height, title, mon, win);
         if(!windowPtr)
         {
             throw std::runtime_error(getError());
@@ -444,16 +447,16 @@ namespace glfw
         glfwSetInputMode(ptr.get(), mode, value);
     }
 
-    int Window::getKey(int key) const
+    KeyAction Window::getKey(Key key) const
     {
         assert(ptr.get() != nullptr);
-        return glfwGetKey(ptr.get(), key);
+        return static_cast<KeyAction>(glfwGetKey(ptr.get(), static_cast<int>(key)));
     }
 
-    int Window::getMouseButton(int button) const // TODO: type checked method
+    KeyAction Window::getMouseButton(MouseButton button) const // TODO: type checked method
     {
         assert(ptr.get() != nullptr);
-        return glfwGetMouseButton(ptr.get(), button);
+        return static_cast<KeyAction>(glfwGetMouseButton(ptr.get(), static_cast<int>(button)));
     }
 
     Position<double> Window::getCursorPos() const
@@ -483,7 +486,7 @@ namespace glfw
         glfwSetKeyCallback(ptr.get(), [](GLFWwindow* ptr, int key, int scancode, int action, int mods)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->keyFunction(*window, key, scancode, action, mods);
+            window->keyFunction(*window, static_cast<Key>(key), scancode, static_cast<KeyAction>(action), mods);
         });
         return callback;
     }
@@ -519,7 +522,7 @@ namespace glfw
         glfwSetMouseButtonCallback(ptr.get(), [](GLFWwindow* ptr, int button, int action, int mods)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->mouseButtonFunction(*window, button, action, mods);
+            window->mouseButtonFunction(*window, static_cast<MouseButton>(button), static_cast<KeyAction>(action), mods);
         });
         return callback;
     }
