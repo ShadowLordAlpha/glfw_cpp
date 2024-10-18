@@ -38,6 +38,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <functional>
 
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
