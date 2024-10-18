@@ -270,37 +270,37 @@ static void error_callback(int error, const char* description)
 // Handle key strokes
 //========================================================================
 
-void key_callback(glfw::Window& window, int key, int scancode, int action, int mods)
+void key_callback(glfw::Window& window, glfw::Key key, int scancode, glfw::KeyAction action, int mods)
 {
-    if (action != GLFW_PRESS)
+    if (action != glfw::KeyAction::PRESS)
         return;
 
     switch (key)
     {
-        case GLFW_KEY_ESCAPE:
+        case glfw::Key::ESCAPE:
             window.setShouldClose(true);
             break;
-        case GLFW_KEY_SPACE:
+        case glfw::Key::SPACE:
             init_grid();
             break;
-        case GLFW_KEY_LEFT:
+        case glfw::Key::LEFT:
             alpha += 5;
             break;
-        case GLFW_KEY_RIGHT:
+        case glfw::Key::RIGHT:
             alpha -= 5;
             break;
-        case GLFW_KEY_UP:
+        case glfw::Key::UP:
             beta -= 5;
             break;
-        case GLFW_KEY_DOWN:
+        case glfw::Key::DOWN:
             beta += 5;
             break;
-        case GLFW_KEY_PAGE_UP:
+        case glfw::Key::PAGE_UP:
             zoom -= 0.25f;
             if (zoom < 0.f)
                 zoom = 0.f;
             break;
-        case GLFW_KEY_PAGE_DOWN:
+        case glfw::Key::PAGE_DOWN:
             zoom += 0.25f;
             break;
         default:
@@ -313,12 +313,12 @@ void key_callback(glfw::Window& window, int key, int scancode, int action, int m
 // Callback function for mouse button events
 //========================================================================
 
-void mouse_button_callback(glfw::Window& window, int button, int action, int mods)
+void mouse_button_callback(glfw::Window& window, glfw::MouseButton button, glfw::KeyAction action, int mods)
 {
-    if (button != GLFW_MOUSE_BUTTON_LEFT)
+    if (button != glfw::MouseButton::LEFT)
         return;
 
-    if (action == GLFW_PRESS)
+    if (action == glfw::KeyAction::PRESS)
     {
         window.setInputMode(glfw::InputMode::CURSOR, glfw::InputValue::CURSOR_DISABLED);
         auto [x, y] = window.getCursorPos();
@@ -334,15 +334,15 @@ void mouse_button_callback(glfw::Window& window, int button, int action, int mod
 // Callback function for cursor motion events
 //========================================================================
 
-void cursor_position_callback(glfw::Window& window, double x, double y)
+void cursor_position_callback(glfw::Window& window, glfw::Position<double> pos)
 {
-    if (window.getInputMode(glfw::InputMode::CURSOR) == glfw::InputValue::CURSOR_DISABLED)
+    if (window.getInputMode(glfw::InputMode::CURSOR) == static_cast<int>(glfw::InputValue::CURSOR_DISABLED))
     {
-        alpha += (GLfloat) (x - cursorX) / 10.f;
-        beta += (GLfloat) (y - cursorY) / 10.f;
+        alpha += (GLfloat) (pos.x - cursorX) / 10.f;
+        beta += (GLfloat) (pos.y - cursorY) / 10.f;
 
-        cursorX = x;
-        cursorY = y;
+        cursorX = pos.x;
+        cursorY = pos.y;
     }
 }
 
@@ -351,9 +351,9 @@ void cursor_position_callback(glfw::Window& window, double x, double y)
 // Callback function for scroll events
 //========================================================================
 
-void scroll_callback(glfw::Window& window, double x, double y)
+void scroll_callback(glfw::Window& window, glfw::Position<double> pos)
 {
-    zoom += (float) y / 4.f;
+    zoom += (float) pos.y / 4.f;
     if (zoom < 0)
         zoom = 0;
 }
@@ -363,16 +363,16 @@ void scroll_callback(glfw::Window& window, double x, double y)
 // Callback function for framebuffer resize events
 //========================================================================
 
-void framebuffer_size_callback(glfw::Window& window, int width, int height)
+void framebuffer_size_callback(glfw::Window& window, glfw::Size size)
 {
     float ratio = 1.f;
     mat4x4 projection;
 
-    if (height > 0)
-        ratio = static_cast<float>(width) / static_cast<float>(height);
+    if (size.height > 0)
+        ratio = static_cast<float>(size.width) / static_cast<float>(size.height);
 
     // Setup viewport
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, size.width, size.height);
 
     // Change to the projection matrix and set our viewing volume
     glMatrixMode(GL_PROJECTION);
@@ -410,7 +410,7 @@ int main()
     glfw::swapInterval(1);
 
     auto [width, height] = window.getFramebufferSize();
-    framebuffer_size_callback(window, width, height);
+    framebuffer_size_callback(window, {width, height});
 
     // Initialize OpenGL
     init_opengl();

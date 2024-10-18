@@ -54,6 +54,28 @@ export namespace glfw
 
     inline Window* getCurrentContext();
 
+    struct WindowCallbacks
+    {
+        WindowPosFunction windowPosFunction;
+        WindowSizeFunction windowSizeFunction;
+        WindowCloseFunction windowCloseFunction;
+        WindowRefreshFunction windowRefreshFunction;
+        WindowFocusFunction windowFocusFunction;
+        WindowIconifyFunction windowIconifyFunction;
+        WindowMaximizeFunction windowMaximizeFunction;
+        FrameBufferSizeFunction windowFrameBufferSizeFunction;
+        WindowContentScaleFunction windowContentScaleFunction;
+
+        KeyFunction keyFunction;
+        CharFunction charFunction;
+        CharModsFunction charModsFunction;
+        MouseButtonFunction mouseButtonFunction;
+        CursorPosFunction cursorPosFunction;
+        CursorEnterFunction cursorEnterFunction;
+        ScrollFunction scrollFunction;
+        DropFunction dropFunction;
+    };
+
     class Window
     {
     public:
@@ -64,6 +86,8 @@ export namespace glfw
         GLFWwindow* get() const;
         operator GLFWwindow*() const; // NOLINT(*-explicit-constructor)
         operator bool() const; // NOLINT(*-explicit-constructor)
+
+        Window& operator=(const Window&) = default;
 
         [[nodiscard]] bool shouldClose() const;
         void setShouldClose(bool value);
@@ -130,26 +154,8 @@ export namespace glfw
 
         // TODO: should glfwCreateWindowSurface go in here? it kinda matches so possibly?
     private:
-        std::unique_ptr<GLFWwindow, Deleter> ptr;
-        void* user;
-
-        WindowPosFunction windowPosFunction;
-        WindowSizeFunction windowSizeFunction;
-        WindowCloseFunction windowCloseFunction;
-        WindowRefreshFunction windowRefreshFunction;
-        WindowFocusFunction windowFocusFunction;
-        WindowIconifyFunction windowIconifyFunction;
-        WindowMaximizeFunction windowMaximizeFunction;
-        FrameBufferSizeFunction windowFrameBufferSizeFunction;
-        WindowContentScaleFunction windowContentScaleFunction;
-
-        KeyFunction keyFunction;
-        CharFunction charFunction;
-        CharModsFunction charModsFunction;
-        MouseButtonFunction mouseButtonFunction;
-        CursorPosFunction cursorPosFunction;
-        CursorEnterFunction cursorEnterFunction;
-        ScrollFunction scrollFunction;
-        DropFunction dropFunction;
+        std::shared_ptr<GLFWwindow> ptr;
+        void* user = nullptr;
+        std::shared_ptr<WindowCallbacks> callbacks;
     };
 }

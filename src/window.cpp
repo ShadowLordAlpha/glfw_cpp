@@ -34,7 +34,10 @@ namespace glfw
 {
     void Deleter::operator()(GLFWwindow* ptr)
     {
-        glfwDestroyWindow(ptr);
+        if(ptr)
+        {
+            glfwDestroyWindow(ptr);
+        }
     }
 
     void defaultWindowHints()
@@ -85,7 +88,7 @@ namespace glfw
 
     // Window methods below
 
-    Window::Window() : Window(nullptr) {}
+    Window::Window() : ptr(nullptr) {}
 
     GLFWwindow* createWindow(int width, int height, const char *title, Monitor* monitor, Window* share)
     {
@@ -102,9 +105,9 @@ namespace glfw
 
     Window::Window(int width, int height, const char* title, Monitor* monitor, Window* share) : Window(createWindow(width, height, title, monitor, share)) {}
 
-    Window::Window(GLFWwindow* window) : ptr(window)
+    Window::Window(GLFWwindow* window) : ptr(window, Deleter()), callbacks(std::make_shared<WindowCallbacks>())
     {
-        if(!ptr.get())
+        if(ptr.get())
         {
             glfwSetWindowUserPointer(ptr.get(), this);
         }
@@ -313,11 +316,11 @@ namespace glfw
     WindowPosFunction Window::setPosCallback(WindowPosFunction callback)
     {
         assert(ptr.get() != nullptr);
-        windowPosFunction = callback;
+        callbacks->windowPosFunction = callback;
         glfwSetWindowPosCallback(ptr.get(), [](GLFWwindow* ptr, int x, int y)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->windowPosFunction(*window, {x, y});
+            window->callbacks->windowPosFunction(*window, {x, y});
         });
         return callback;
     }
@@ -325,11 +328,11 @@ namespace glfw
     WindowSizeFunction Window::setSizeCallback(WindowSizeFunction callback)
     {
         assert(ptr.get() != nullptr);
-        windowSizeFunction = callback;
+        callbacks->windowSizeFunction = callback;
         glfwSetWindowSizeCallback(ptr.get(), [](GLFWwindow* ptr, int w, int h)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->windowSizeFunction(*window, {w, h});
+            window->callbacks->windowSizeFunction(*window, {w, h});
         });
         return callback;
     }
@@ -337,11 +340,11 @@ namespace glfw
     WindowCloseFunction Window::setCloseCallback(WindowCloseFunction callback)
     {
         assert(ptr.get() != nullptr);
-        windowCloseFunction = callback;
+        callbacks->windowCloseFunction = callback;
         glfwSetWindowCloseCallback(ptr.get(), [](GLFWwindow* ptr)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->windowCloseFunction(*window);
+            window->callbacks->windowCloseFunction(*window);
         });
         return callback;
     }
@@ -349,11 +352,11 @@ namespace glfw
     WindowRefreshFunction Window::setRefreshCallback(WindowRefreshFunction callback)
     {
         assert(ptr.get() != nullptr);
-        windowRefreshFunction = callback;
+        callbacks->windowRefreshFunction = callback;
         glfwSetWindowRefreshCallback(ptr.get(), [](GLFWwindow* ptr)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->windowRefreshFunction(*window);
+            window->callbacks->windowRefreshFunction(*window);
         });
         return callback;
     }
@@ -361,11 +364,11 @@ namespace glfw
     WindowFocusFunction Window::setFocusCallback(WindowFocusFunction callback)
     {
         assert(ptr.get() != nullptr);
-        windowFocusFunction = callback;
+        callbacks->windowFocusFunction = callback;
         glfwSetWindowFocusCallback(ptr.get(), [](GLFWwindow* ptr, int f)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->windowFocusFunction(*window, f == GLFW_TRUE);
+            window->callbacks->windowFocusFunction(*window, f == GLFW_TRUE);
         });
         return callback;
     }
@@ -373,11 +376,11 @@ namespace glfw
     WindowIconifyFunction Window::setIconifyCallback(WindowIconifyFunction callback)
     {
         assert(ptr.get() != nullptr);
-        windowIconifyFunction = callback;
+        callbacks->windowIconifyFunction = callback;
         glfwSetWindowIconifyCallback(ptr.get(), [](GLFWwindow* ptr, int i)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->windowIconifyFunction(*window, i == GLFW_TRUE);
+            window->callbacks->windowIconifyFunction(*window, i == GLFW_TRUE);
         });
         return callback;
     }
@@ -385,11 +388,11 @@ namespace glfw
     WindowMaximizeFunction Window::setMaximizeCallback(WindowMaximizeFunction callback)
     {
         assert(ptr.get() != nullptr);
-        windowMaximizeFunction = callback;
+        callbacks->windowMaximizeFunction = callback;
         glfwSetWindowMaximizeCallback(ptr.get(), [](GLFWwindow* ptr, int m)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->windowMaximizeFunction(*window, m == GLFW_TRUE);
+            window->callbacks->windowMaximizeFunction(*window, m == GLFW_TRUE);
         });
         return callback;
     }
@@ -397,11 +400,11 @@ namespace glfw
     FrameBufferSizeFunction Window::setFramebufferSizeCallback(FrameBufferSizeFunction callback)
     {
         assert(ptr.get() != nullptr);
-        windowFrameBufferSizeFunction = callback;
+        callbacks->windowFrameBufferSizeFunction = callback;
         glfwSetFramebufferSizeCallback(ptr.get(), [](GLFWwindow* ptr, int w, int h)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->windowFrameBufferSizeFunction(*window, {w, h});
+            window->callbacks->windowFrameBufferSizeFunction(*window, {w, h});
         });
         return callback;
     }
@@ -409,11 +412,11 @@ namespace glfw
     WindowContentScaleFunction Window::setContentScaleCallback(WindowContentScaleFunction callback)
     {
         assert(ptr.get() != nullptr);
-        windowContentScaleFunction = callback;
+        callbacks->windowContentScaleFunction = callback;
         glfwSetWindowContentScaleCallback(ptr.get(), [](GLFWwindow* ptr, float x, float y)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->windowContentScaleFunction(*window, {x, y});
+            window->callbacks->windowContentScaleFunction(*window, {x, y});
         });
         return callback;
     }
@@ -482,11 +485,11 @@ namespace glfw
     KeyFunction Window::setKeyCallback(KeyFunction callback)
     {
         assert(ptr.get() != nullptr);
-        keyFunction = callback;
+        callbacks->keyFunction = callback;
         glfwSetKeyCallback(ptr.get(), [](GLFWwindow* ptr, int key, int scancode, int action, int mods)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->keyFunction(*window, static_cast<Key>(key), scancode, static_cast<KeyAction>(action), mods);
+            window->callbacks->keyFunction(*window, static_cast<Key>(key), scancode, static_cast<KeyAction>(action), mods);
         });
         return callback;
     }
@@ -494,11 +497,11 @@ namespace glfw
     CharFunction Window::setCharCallback(CharFunction callback)
     {
         assert(ptr.get() != nullptr);
-        charFunction = callback;
+        callbacks->charFunction = callback;
         glfwSetCharCallback(ptr.get(), [](GLFWwindow* ptr, unsigned int codepoint)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->charFunction(*window, codepoint);
+            window->callbacks->charFunction(*window, codepoint);
         });
         return callback;
     }
@@ -506,11 +509,11 @@ namespace glfw
     CharModsFunction Window::setCharModsCallback(CharModsFunction callback)
     {
         assert(ptr.get() != nullptr);
-        charModsFunction = callback;
+        callbacks->charModsFunction = callback;
         glfwSetCharModsCallback(ptr.get(), [](GLFWwindow* ptr, unsigned int codepoint, int mods)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->charModsFunction(*window, codepoint, mods);
+            window->callbacks->charModsFunction(*window, codepoint, mods);
         });
         return callback;
     }
@@ -518,11 +521,14 @@ namespace glfw
     MouseButtonFunction Window::setMouseButtonCallback(MouseButtonFunction callback)
     {
         assert(ptr.get() != nullptr);
-        mouseButtonFunction = callback;
+        callbacks->mouseButtonFunction = callback;
         glfwSetMouseButtonCallback(ptr.get(), [](GLFWwindow* ptr, int button, int action, int mods)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->mouseButtonFunction(*window, static_cast<MouseButton>(button), static_cast<KeyAction>(action), mods);
+            if(window && window->callbacks->mouseButtonFunction)
+            {
+                window->callbacks->mouseButtonFunction(*window, static_cast<MouseButton>(button), static_cast<KeyAction>(action), mods);
+            }
         });
         return callback;
     }
@@ -530,11 +536,14 @@ namespace glfw
     CursorPosFunction Window::setCursorPosCallback(CursorPosFunction callback)
     {
         assert(ptr.get() != nullptr);
-        cursorPosFunction = callback;
+        callbacks->cursorPosFunction = callback;
         glfwSetCursorPosCallback(ptr.get(), [](GLFWwindow* ptr, double xpos, double ypos)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->cursorPosFunction(*window, {xpos, ypos});
+            if(window && window->callbacks->cursorPosFunction)
+            {
+                window->callbacks->cursorPosFunction(*window, {xpos, ypos});
+            }
         });
         return callback;
     }
@@ -542,11 +551,11 @@ namespace glfw
     CursorEnterFunction Window::setCursorEnterCallback(CursorEnterFunction callback)
     {
         assert(ptr.get() != nullptr);
-        cursorEnterFunction = callback;
+        callbacks->cursorEnterFunction = callback;
         glfwSetCursorEnterCallback(ptr.get(), [](GLFWwindow* ptr, int e)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->cursorEnterFunction(*window, e == GLFW_TRUE);
+            window->callbacks->cursorEnterFunction(*window, e == GLFW_TRUE);
         });
         return callback;
     }
@@ -554,11 +563,11 @@ namespace glfw
     ScrollFunction Window::setScrollCallback(ScrollFunction callback)
     {
         assert(ptr.get() != nullptr);
-        scrollFunction = callback;
+        callbacks->scrollFunction = callback;
         glfwSetScrollCallback(ptr.get(), [](GLFWwindow* ptr, double xoffset, double yoffset)
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->scrollFunction(*window, {xoffset, yoffset});
+            window->callbacks->scrollFunction(*window, {xoffset, yoffset});
         });
         return callback;
     }
@@ -566,11 +575,11 @@ namespace glfw
     DropFunction Window::setDropCallback(DropFunction callback)
     {
         assert(ptr.get() != nullptr);
-        dropFunction = callback;
+        callbacks->dropFunction = callback;
         glfwSetDropCallback(ptr.get(), [](GLFWwindow* ptr, int path_count, const char* paths[])
         {
             auto window = static_cast<Window*>(glfwGetWindowUserPointer(ptr));
-            window->dropFunction(*window, path_count, paths);
+            window->callbacks->dropFunction(*window, path_count, paths);
         });
         return callback;
     }

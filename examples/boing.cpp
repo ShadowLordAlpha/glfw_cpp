@@ -55,10 +55,10 @@ import glfw;
 /* Prototypes */
 void init();
 void display();
-void reshape(glfw::Window& window, int w, int h);
-void key_callback(glfw::Window& window, int key, int scancode, int action, int mods);
-void mouse_button_callback(glfw::Window& window, int button, int action, int mods);
-void cursor_position_callback(glfw::Window& window, double x, double y);
+//void reshape(glfw::Window& window, glfw::Size size);
+void key_callback(glfw::Window& window, glfw::Key key, int scancode, glfw::KeyAction action, int mods);
+void mouse_button_callback(glfw::Window& window, glfw::MouseButton button, glfw::KeyAction action, int mods);
+void cursor_position_callback(glfw::Window& window, glfw::Position<double> pos);
 void DrawBoingBall();
 void BounceBall(double dt);
 void DrawBoingBallBand(GLfloat long_lo, GLfloat long_hi);
@@ -218,16 +218,16 @@ void display()
 /*****************************************************************************
  * reshape()
  *****************************************************************************/
-void reshape(glfw::Window& window, int w, int h )
+void reshape(glfw::Window& window, glfw::Size size)
 {
    mat4x4 projection, view;
 
-   glViewport( 0, 0, (GLsizei)w, (GLsizei)h );
+   glViewport( 0, 0, (GLsizei)size.width, (GLsizei)size.height );
 
    glMatrixMode( GL_PROJECTION );
    mat4x4_perspective( projection,
                        2.f * (float) atan2( RADIUS, 200.f ),
-                       (float)w / (float)h,
+                       (float)size.width / (float)size.height,
                        1.f, VIEW_SCENE_DIST );
    glLoadMatrixf((const GLfloat*) projection);
 
@@ -241,15 +241,15 @@ void reshape(glfw::Window& window, int w, int h )
    glLoadMatrixf((const GLfloat*) view);
 }
 
-void key_callback(glfw::Window& window, int key, int scancode, glfw::Action action, int mods)
+void key_callback(glfw::Window& window, glfw::Key key, int scancode, glfw::KeyAction action, int mods)
 {
-    if (action != glfw::Action::PRESS)
+    if (action != glfw::KeyAction::PRESS)
         return;
 
-    if (key == GLFW_KEY_ESCAPE && mods == 0)
+    if (key == glfw::Key::ESCAPE && mods == 0)
         window.setShouldClose(true);
-    if ((key == GLFW_KEY_ENTER && mods == GLFW_MOD_ALT) ||
-        (key == GLFW_KEY_F11 && mods == GLFW_MOD_ALT))
+    if ((key == glfw::Key::ENTER && mods == glfw::ModifierKeyBits::ALT) ||
+        (key == glfw::Key::F11 && mods == glfw::ModifierKeyBits::ALT))
     {
         if (window.getMonitor())
         {
@@ -282,12 +282,12 @@ static void set_ball_pos ( GLfloat x, GLfloat y )
    ball_y = y - (height / 2);
 }
 
-void mouse_button_callback(glfw::Window& window, int button, int action, int mods )
+void mouse_button_callback(glfw::Window& window, glfw::MouseButton button, glfw::KeyAction action, int mods )
 {
-   if (button != GLFW_MOUSE_BUTTON_LEFT)
+   if (button != glfw::MouseButton::LEFT)
       return;
 
-   if (action == GLFW_PRESS)
+   if (action == glfw::KeyAction::PRESS)
    {
       override_pos = true;
       set_ball_pos(cursor_x, cursor_y);
@@ -298,10 +298,10 @@ void mouse_button_callback(glfw::Window& window, int button, int action, int mod
    }
 }
 
-void cursor_position_callback(glfw::Window& window, double x, double y )
+void cursor_position_callback(glfw::Window& window, glfw::Position<double> pos)
 {
-   cursor_x = (float) x;
-   cursor_y = (float) y;
+   cursor_x = (float) pos.x;
+   cursor_y = (float) pos.y;
 
    if ( override_pos )
       set_ball_pos(cursor_x, cursor_y);
@@ -635,7 +635,7 @@ int main()
     glfw::Window window;
 
     /* Init GLFW */
-    glfw::Library library();
+    glfw::Library library;
 
     window = glfw::Window( 400, 400, "Boing (classic Amiga demo)");
 
@@ -653,7 +653,7 @@ int main()
     auto [w, h] = window.getFramebufferSize();
     width = w;
     height = h;
-    reshape(window, width, height);
+    reshape(window, {width, height});
 
     glfw::setTime(0.0);
 
